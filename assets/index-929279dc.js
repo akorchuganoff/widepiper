@@ -887,4 +887,4 @@ Values:
 `,lQ=no.div`
   max-width: 900px;
   margin: 0 auto;
-`;function uQ(){const{network:e}=pf();return Yt(sQ,{children:Jn(lQ,{children:[Yt(Hm,{children:Jn(zi,{children:[Yt(Cj,{}),Yt(ha,{children:e?e===Ys.MAINNET?"mainnet":"testnet":"N/A"})]})}),Yt(Hm,{children:Yt(oQ,{})})]})})}const fQ="https://alefmanvladimir.github.io/my-twa/tonconnect-manifest.json",cQ=new QS({defaultOptions:{queries:{refetchOnWindowFocus:!1}}});im.createRoot(document.getElementById("root")).render(Yt(Aj,{manifestUrl:fQ,children:Yt(ZE,{client:cQ,children:Yt(uQ,{})})}));
+`;function uQ(){const{network:e}=pf();return Yt(sQ,{children:Jn(lQ,{children:[Yt(Hm,{children:Jn(zi,{children:[Yt(Cj,{}),Yt(ha,{children:e?e===Ys.MAINNET?"mainnet":"testnet":"N/A"})]})}),Yt(Hm,{children:Yt(oQ,{})})]})})}const fQ="https://disk.yandex.ru/d/ubfjkaJiXOQJOQ",cQ=new QS({defaultOptions:{queries:{refetchOnWindowFocus:!1}}});im.createRoot(document.getElementById("root")).render(Yt(Aj,{manifestUrl:fQ,children:Yt(ZE,{client:cQ,children:Yt(uQ,{})})}));
