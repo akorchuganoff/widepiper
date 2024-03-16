@@ -1182,4 +1182,4 @@ Values:
 `,uce=os.div`
   max-width: 900px;
   margin: 0 auto;
-`;function fce(){const{network:e}=Ad();return Bt(lce,{children:Ir(uce,{children:[Bt(uc,{children:Ir(aa,{children:[Bt(LK,{}),Bt(a0,{children:e?e===pu.MAINNET?"mainnet":"testnet":"N/A"})]})}),Bt(uc,{children:Bt(sce,{})})]})})}const cce="https://github.com/akorchuganoff/widepiper/blob/main/public/tonconnect-manifest.json",dce=new uO({defaultOptions:{queries:{refetchOnWindowFocus:!1}}});tb.createRoot(document.getElementById("root")).render(Bt(RK,{manifestUrl:cce,children:Bt(vU,{client:dce,children:Bt(fce,{})})}));
+`;function fce(){const{network:e}=Ad();return Bt(lce,{children:Ir(uce,{children:[Bt(uc,{children:Ir(aa,{children:[Bt(LK,{}),Bt(a0,{children:e?e===pu.MAINNET?"mainnet":"testnet":"N/A"})]})}),Bt(uc,{children:Bt(sce,{})})]})})}const cce="https://raw.githubusercontent.com/akorchuganoff/widepiper/main/public/tonconnect-manifest.json",dce=new uO({defaultOptions:{queries:{refetchOnWindowFocus:!1}}});tb.createRoot(document.getElementById("root")).render(Bt(RK,{manifestUrl:cce,children:Bt(vU,{client:dce,children:Bt(fce,{})})}));
