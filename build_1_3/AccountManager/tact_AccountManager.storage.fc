@@ -1,0 +1,345 @@
+;;
+;; Type: StateInit
+;; TLB: _ code:^cell data:^cell = StateInit
+;;
+
+((cell, cell)) $StateInit$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (cell vvv'code, cell vvv'data) = __tact_tuple_destroy_2(v);
+    return (vvv'code, vvv'data);
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_code_data_body(slice to, int value, int mode, int bounce, cell code, cell data, cell body) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce(slice to, int value, int mode, int bounce) inline {
+    return (bounce, to, value, mode, null(), null(), null());
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+;;
+;; Type: Deploy
+;; Header: 0x946a98b6
+;; TLB: deploy#946a98b6 queryId:uint64 = Deploy
+;;
+
+builder $Deploy$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2490013878, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $Deploy$_store_cell((int) v) inline {
+    return $Deploy$_store(begin_cell(), v).end_cell();
+}
+
+(slice, ((int))) $Deploy$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2490013878);
+    var v'queryId = sc_0~load_uint(64);
+    return (sc_0, (v'queryId));
+}
+
+((int)) $Deploy$_constructor_queryId(int queryId) inline {
+    return (queryId);
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v) inline {
+    return $DeployOk$_store(begin_cell(), v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int queryId) inline {
+    return (queryId);
+}
+
+;;
+;; Type: Mint
+;; Header: 0x5a909f07
+;; TLB: mint#5a909f07 amount:int257 to:address = Mint
+;;
+
+builder $Mint$_store(builder build_0, (int, slice) v) inline {
+    var (v'amount, v'to) = v;
+    build_0 = store_uint(build_0, 1519427335, 32);
+    build_0 = build_0.store_int(v'amount, 257);
+    build_0 = __tact_store_address(build_0, v'to);
+    return build_0;
+}
+
+cell $Mint$_store_cell((int, slice) v) inline {
+    return $Mint$_store(begin_cell(), v).end_cell();
+}
+
+(slice, ((int, slice))) $Mint$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1519427335);
+    var v'amount = sc_0~load_int(257);
+    var v'to = sc_0~__tact_load_address();
+    return (sc_0, (v'amount, v'to));
+}
+
+((int, slice)) $Mint$_constructor_amount_to(int amount, slice to) inline {
+    return (amount, to);
+}
+
+;;
+;; Type: CreateNewBlock
+;; Header: 0xfcf92756
+;; TLB: create_new_block#fcf92756 course:coins = CreateNewBlock
+;;
+
+(slice, ((int))) $CreateNewBlock$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 4244186966);
+    var v'course = sc_0~load_coins();
+    return (sc_0, (v'course));
+}
+
+;;
+;; Type: InternalBetWinMessage
+;; Header: 0xdea72f71
+;; TLB: internal_bet_win_message#dea72f71 amount:coins owner_ton_wallet:address = InternalBetWinMessage
+;;
+
+(slice, ((int, slice))) $InternalBetWinMessage$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3735498609);
+    var v'amount = sc_0~load_coins();
+    var v'owner_ton_wallet = sc_0~__tact_load_address();
+    return (sc_0, (v'amount, v'owner_ton_wallet));
+}
+
+;;
+;; Type: InitMinter
+;; Header: 0xecc922ca
+;; TLB: init_minter#ecc922ca content:Maybe ^cell = InitMinter
+;;
+
+(slice, ((cell))) $InitMinter$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3972604618);
+    var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
+    return (sc_0, (v'content));
+}
+
+;;
+;; Type: IncrementCurrentBlockCount
+;; Header: 0x12ec415a
+;; TLB: increment_current_block_count#12ec415a seqno:uint256 odd_flag:bool = IncrementCurrentBlockCount
+;;
+
+(slice, ((int, int))) $IncrementCurrentBlockCount$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 317473114);
+    var v'seqno = sc_0~load_uint(256);
+    var v'odd_flag = sc_0~load_int(1);
+    return (sc_0, (v'seqno, v'odd_flag));
+}
+
+;;
+;; Type: Bet
+;;
+
+builder $Bet$init$_store(builder build_0, (slice, int, int) v) inline {
+    var (v'accountManager, v'seqno, v'odd_flag) = v;
+    build_0 = __tact_store_address(build_0, v'accountManager);
+    build_0 = build_0.store_int(v'seqno, 257);
+    build_0 = build_0.store_int(v'odd_flag, 1);
+    return build_0;
+}
+
+(cell, cell) $Bet$_init_child(cell sys', slice $accountManager, int $seqno, int $odd_flag) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: Bet
+    cell mine = __tact_dict_get_code(source, 47361);
+    contracts = __tact_dict_set_code(contracts, 47361, mine);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $Bet$init$_store(b, ($accountManager, $seqno, $odd_flag));
+    return (mine, b.end_cell());
+}
+
+;;
+;; Type: SampleJetton
+;;
+
+builder $SampleJetton$init$_store(builder build_0, (slice, cell) v) inline {
+    var (v'owner, v'content) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = ~ null?(v'content) ? build_0.store_int(true, 1).store_ref(v'content) : build_0.store_int(false, 1);
+    return build_0;
+}
+
+(cell, cell) $SampleJetton$_init_child(cell sys', slice $owner, cell $content) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: SampleJetton
+    cell mine = __tact_dict_get_code(source, 11141);
+    contracts = __tact_dict_set_code(contracts, 11141, mine);
+    
+    ;; Contract Code: JettonDefaultWallet
+    cell code_55471 = __tact_dict_get_code(source, 55471);
+    contracts = __tact_dict_set_code(contracts, 55471, code_55471);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $SampleJetton$init$_store(b, ($owner, $content));
+    return (mine, b.end_cell());
+}
+
+;;
+;; Type: TONCheckBook
+;;
+
+builder $TONCheckBook$init$_store(builder build_0, (slice, slice) v) inline {
+    var (v'accountManager, v'owner) = v;
+    build_0 = __tact_store_address(build_0, v'accountManager);
+    build_0 = __tact_store_address(build_0, v'owner);
+    return build_0;
+}
+
+(cell, cell) $TONCheckBook$_init_child(cell sys', slice $accountManager, slice $owner) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: TONCheckBook
+    cell mine = __tact_dict_get_code(source, 56866);
+    contracts = __tact_dict_set_code(contracts, 56866, mine);
+    
+    ;; Contract Code: Bet
+    cell code_47361 = __tact_dict_get_code(source, 47361);
+    contracts = __tact_dict_set_code(contracts, 47361, code_47361);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $TONCheckBook$init$_store(b, ($accountManager, $owner));
+    return (mine, b.end_cell());
+}
+
+;;
+;; Type: JettonDefaultWallet
+;;
+
+builder $JettonDefaultWallet$init$_store(builder build_0, (slice, slice) v) inline {
+    var (v'master, v'owner) = v;
+    build_0 = __tact_store_address(build_0, v'master);
+    build_0 = __tact_store_address(build_0, v'owner);
+    return build_0;
+}
+
+(cell, cell) $JettonDefaultWallet$_init_child(cell sys', slice $master, slice $owner) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: JettonDefaultWallet
+    cell mine = __tact_dict_get_code(source, 55471);
+    contracts = __tact_dict_set_code(contracts, 55471, mine);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $JettonDefaultWallet$init$_store(b, ($master, $owner));
+    return (mine, b.end_cell());
+}
+
+;;
+;; Type: AccountManager
+;;
+
+builder $AccountManager$_store(builder build_0, (slice, slice, int, int, int, int, int, int, int, int, int) v) inline {
+    var (v'owner, v'minter, v'old_bet_counter, v'new_bet_counter, v'old_block_course, v'new_block_course, v'median_delta_r, v'sum_delta_r, v'first_time_flag, v'current_index, v'odd_flag) = v;
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = __tact_store_address(build_0, v'minter);
+    build_0 = build_0.store_uint(v'old_bet_counter, 256);
+    var build_1 = begin_cell();
+    build_1 = build_1.store_uint(v'new_bet_counter, 256);
+    build_1 = build_1.store_coins(v'old_block_course);
+    build_1 = build_1.store_coins(v'new_block_course);
+    build_1 = build_1.store_coins(v'median_delta_r);
+    build_1 = build_1.store_coins(v'sum_delta_r);
+    build_1 = build_1.store_int(v'first_time_flag, 1);
+    build_1 = build_1.store_uint(v'current_index, 256);
+    build_1 = build_1.store_int(v'odd_flag, 1);
+    build_0 = store_ref(build_0, build_1.end_cell());
+    return build_0;
+}
+
+(slice, ((slice, slice, int, int, int, int, int, int, int, int, int))) $AccountManager$_load(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    var v'minter = sc_0~__tact_load_address();
+    var v'old_bet_counter = sc_0~load_uint(256);
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'new_bet_counter = sc_1~load_uint(256);
+    var v'old_block_course = sc_1~load_coins();
+    var v'new_block_course = sc_1~load_coins();
+    var v'median_delta_r = sc_1~load_coins();
+    var v'sum_delta_r = sc_1~load_coins();
+    var v'first_time_flag = sc_1~load_int(1);
+    var v'current_index = sc_1~load_uint(256);
+    var v'odd_flag = sc_1~load_int(1);
+    return (sc_0, (v'owner, v'minter, v'old_bet_counter, v'new_bet_counter, v'old_block_course, v'new_block_course, v'median_delta_r, v'sum_delta_r, v'first_time_flag, v'current_index, v'odd_flag));
+}
+
+(slice, ((slice))) $AccountManager$init$_load(slice sc_0) inline {
+    var v'owner = sc_0~__tact_load_address();
+    return (sc_0, (v'owner));
+}
+
+(slice, slice, int, int, int, int, int, int, int, int, int) $AccountManager$_contract_load() impure inline_ref {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$AccountManager$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        (slice owner) = $sc~$AccountManager$init$_load();
+        $sc.end_parse();
+        return $AccountManager$_contract_init(owner);
+    }
+}
+
+() $AccountManager$_contract_store((slice, slice, int, int, int, int, int, int, int, int, int) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $AccountManager$_store(b, v);
+    set_data(b.end_cell());
+}
