@@ -18,16 +18,16 @@ export function AccountManager() {
     const { wallet_address, ton_balance } = getTonWalletInfo()
     const { AccountManagerAddress, minterAddress, jettonWalletAddress, jettonBalance, TONCheckBookAddress, TONCheckBookBalance, admin_wallet_address, mint, create_bet, deploy, deploy_check_book, deposit_check_book, withdraw_check_book, create_new_block, new_bets, old_bets, win_bet, lose_bet } = useAccountManagerContract()
 
-    const [round_amount, setRoundAmountValue] = useState(0);
+    // const [round_amount, setRoundAmountValue] = useState(0);
     const [delta, setDeltaValue] = useState(0);
     const [deposit, setDepositValue] = useState('');
-    const [win_bet_address, setWinValue] = useState('');
-    const [lose_bet_address, setLoseValue] = useState('');
-    const [course, setCourseValue] = useState('');
+    // const [win_bet_address, setWinValue] = useState('');
+    // const [lose_bet_address, setLoseValue] = useState('');
+    // const [course, setCourseValue] = useState('');
 
-    const handleRoundAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setRoundAmountValue(Number(e.target.value));
-    };
+    // const handleRoundAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setRoundAmountValue(Number(e.target.value));
+    // };
 
     const handleDeltaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDeltaValue(Number(e.target.value));
@@ -37,22 +37,22 @@ export function AccountManager() {
         setDepositValue(e.target.value);
     };
 
-    const handleWINChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setWinValue(e.target.value);
-    };
+    // const handleWINChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setWinValue(e.target.value);
+    // };
 
-    const handleLoseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLoseValue(e.target.value);
-    };
+    // const handleLoseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setLoseValue(e.target.value);
+    // };
 
-    const handleCourseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCourseValue(e.target.value);
-    };
+    // const handleCourseChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setCourseValue(e.target.value);
+    // };
 
     const handleSubmitCreateBet = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Предотвращение стандартного поведения формы
         create_bet(delta); // Вызов функции с значением из состояния
-        setRoundAmountValue(0); // Опционально: очистка поля ввода после отправки
+        // setRoundAmountValue(0); // Опционально: очистка поля ввода после отправки
         setDeltaValue(0);
     };
 
@@ -62,23 +62,23 @@ export function AccountManager() {
         setDepositValue(''); // Опционально: очистка поля ввода после отправки
     };
 
-    const handleSubmitWIN = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault(); // Предотвращение стандартного поведения формы
-        win_bet(win_bet_address); // Вызов функции с значением из состояния
-        setWinValue(''); // Опционально: очистка поля ввода после отправки
-    };
+    // const handleSubmitWIN = (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault(); // Предотвращение стандартного поведения формы
+    //     win_bet(win_bet_address); // Вызов функции с значением из состояния
+    //     setWinValue(''); // Опционально: очистка поля ввода после отправки
+    // };
 
-    const handleSubmitLose = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault(); // Предотвращение стандартного поведения формы
-        lose_bet(lose_bet_address); // Вызов функции с значением из состояния
-        setLoseValue(''); // Опционально: очистка поля ввода после отправки
-    };
+    // const handleSubmitLose = (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault(); // Предотвращение стандартного поведения формы
+    //     lose_bet(lose_bet_address); // Вызов функции с значением из состояния
+    //     setLoseValue(''); // Опционально: очистка поля ввода после отправки
+    // };
 
-    const handleSubmitCourse = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault(); // Предотвращение стандартного поведения формы
-        create_new_block(course); // Вызов функции с значением из состояния
-        setCourseValue(''); // Опционально: очистка поля ввода после отправки
-    };
+    // const handleSubmitCourse = (e: React.FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault(); // Предотвращение стандартного поведения формы
+    //     create_new_block(course); // Вызов функции с значением из состояния
+    //     setCourseValue(''); // Опционально: очистка поля ввода после отправки
+    // };
 
     return (
         <Card title="AccountManager">

@@ -268,7 +268,7 @@ export function useAccountManagerContract() {
                 user_delta *= -1
             }
 
-            const response = await fetch("http://localhost:5000/user", {
+            const response = await fetch("http://81.31.245.206:5000/user", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json' // Убедитесь, что используете этот заголовок
@@ -512,14 +512,14 @@ export function useAccountManagerContract() {
 
 
             // Update db
-            await fetch("http://localhost:5000/create_block", {
+            await fetch("http://81.31.245.206:5000/create_block", {
                 method: "POST"
             })
 
             await sleep(20000)
 
             // Apply Auto bets
-            await fetch("http://localhost:5000/users", {
+            await fetch("http://81.31.245.206:5000/users", {
                     method: "GET",
                 }).then(response => response.json()).then(async users =>{
                     for (const user of users) {
@@ -613,7 +613,7 @@ export function useAccountManagerContract() {
 
 
             // Decision from DB
-            let url = new URL("http://localhost:5000/make_decision")
+            let url = new URL("http://81.31.245.206:5000/make_decision")
             url.searchParams.append("course_delta", Number(new_course - old_course).toString())
             await fetch(url.toString(), {
                 method: "GET",
