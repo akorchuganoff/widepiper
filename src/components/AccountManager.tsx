@@ -132,10 +132,10 @@ export function AccountManager() {
 
 
 
-                <Button
+                {/* <Button
                     disabled={!connected} onClick={mint}>
                     Mint jettons
-                </Button>
+                </Button> */}
                 <form onSubmit={handleSubmitCreateBet}>
                     <input
                         type="number"
@@ -165,21 +165,21 @@ export function AccountManager() {
                     Withdraw Check Book
                 </Button>
 
-                <form onSubmit={handleSubmitCourse}>
+                {/* <form onSubmit={handleSubmitCourse}>
                     <input
                         type="int"
                         value={course}
                         onChange={handleCourseChange}
                     />
                     <button type="submit">Create new block</button>
-                </form>
+                </form> */}
 
-                {/* <Button
-                    disabled={!connected} onClick={create_new_block()}>
+                <Button
+                    disabled={!connected} onClick={create_new_block}>
                     Create new block
-                </Button> */}
+                </Button>
 
-                <form onSubmit={handleSubmitWIN}>
+                {/* <form onSubmit={handleSubmitWIN}>
                     <input
                         type="text"
                         value={win_bet_address}
@@ -195,7 +195,7 @@ export function AccountManager() {
                         onChange={handleLoseChange}
                     />
                     <button type="submit">Lose bet</button>
-                </form>
+                </form> */}
 
 
 
