@@ -52,13 +52,13 @@
     return (($self'accountManager, $self'owner), ());
 }
 
-(((slice, slice)), ()) $TONCheckBook$_internal_binary_ApplyBetMessage((slice, slice) $self, (slice, slice, int, int, int, int) $msg) impure inline {
+(((slice, slice)), ()) $TONCheckBook$_internal_binary_ApplyBetMessage((slice, slice) $self, (slice, slice, int, int, int, int, int) $msg) impure inline {
     var ($self'accountManager, $self'owner) = $self;
-    var ($msg'account_manager, $msg'owner, $msg'bet_amount, $msg'delta_r, $msg'seqno, $msg'odd_flag) = $msg;
+    var ($msg'account_manager, $msg'owner, $msg'bet_amount, $msg'delta_r, $msg'seqno, $msg'odd_flag, $msg'is_negative) = $msg;
     throw_unless(61019, (__tact_my_balance() > ($msg'bet_amount + 30000000)));
     var ($new_bet_init'code, $new_bet_init'data) = $Bet$_init_child(__tact_context_sys, $msg'account_manager, $msg'seqno, $msg'odd_flag);
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body_data_code($global_contractAddress(($new_bet_init'code, $new_bet_init'data)), ($msg'bet_amount + 30000000), 2, true, $SetBetInfo$_store_cell($SetBetInfo$_constructor_owner_ton_check_book_delta_r_balance($msg'owner, my_address(), $msg'delta_r, $msg'bet_amount)), $new_bet_init'data, $new_bet_init'code));
-    $global_send($SendParameters$_constructor_to_value_mode_bounce(__tact_context_get_sender(), 0, (128 + 2), true));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body_data_code($global_contractAddress(($new_bet_init'code, $new_bet_init'data)), ($msg'bet_amount + 30000000), 2, true, $SetBetInfo$_store_cell($SetBetInfo$_constructor_owner_ton_check_book_delta_r_balance_is_negative($msg'owner, my_address(), $msg'delta_r, $msg'bet_amount, $msg'is_negative)), $new_bet_init'data, $new_bet_init'code));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce(__tact_context_get_sender(), 0, (64 + 2), true));
     return (($self'accountManager, $self'owner), ());
 }
 
@@ -102,7 +102,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmWikFqoG6Bu6f2SndzySSdywg7Yhiv1Wdj4jWGPxEPAwk";
+    return "ipfs://QmfBDKmJkb9Rog5DCohcnZST1YR3S4B6YmdVE1mrxwVcs8";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -157,7 +157,7 @@ _ lazy_deployment_completed() method_id {
     }
     
     ;; Receive ApplyBetMessage message
-    if (op == 3741955996) {
+    if (op == 4260982606) {
         var msg = in_msg~$ApplyBetMessage$_load();
         self~$TONCheckBook$_internal_binary_ApplyBetMessage(msg);
         return (self, true);

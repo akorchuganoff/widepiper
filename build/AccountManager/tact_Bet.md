@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Bet
-BOC Size: 1463 bytes
+BOC Size: 1481 bytes
 
 # Types
 Total Types: 30
@@ -46,24 +46,24 @@ TLB: `create_new_block#fcf92756 course:coins = CreateNewBlock`
 Signature: `CreateNewBlock{course:coins}`
 
 ## ApplyBetMessage
-TLB: `apply_bet_message#df09b79c account_manager:address owner:address bet_amount:coins delta_r:coins seqno:uint256 odd_flag:bool = ApplyBetMessage`
-Signature: `ApplyBetMessage{account_manager:address,owner:address,bet_amount:coins,delta_r:coins,seqno:uint256,odd_flag:bool}`
+TLB: `apply_bet_message#fdf96f4e account_manager:address owner:address bet_amount:coins delta_r:coins seqno:uint256 odd_flag:bool is_negative:bool = ApplyBetMessage`
+Signature: `ApplyBetMessage{account_manager:address,owner:address,bet_amount:coins,delta_r:coins,seqno:uint256,odd_flag:bool,is_negative:bool}`
 
 ## BetData
-TLB: `_ accountManager:address owner:address checkbook:address seqno:uint256 odd_flag:bool delta_r:coins bet_amount:coins = BetData`
-Signature: `BetData{accountManager:address,owner:address,checkbook:address,seqno:uint256,odd_flag:bool,delta_r:coins,bet_amount:coins}`
+TLB: `_ accountManager:address owner:address checkbook:address seqno:uint256 odd_flag:bool delta_r:coins bet_amount:coins is_negative:bool = BetData`
+Signature: `BetData{accountManager:address,owner:address,checkbook:address,seqno:uint256,odd_flag:bool,delta_r:coins,bet_amount:coins,is_negative:bool}`
 
 ## SetBetInfo
-TLB: `set_bet_info#22c6492b owner:address ton_check_book:address delta_r:coins balance:coins = SetBetInfo`
-Signature: `SetBetInfo{owner:address,ton_check_book:address,delta_r:coins,balance:coins}`
+TLB: `set_bet_info#ff12dab2 owner:address ton_check_book:address delta_r:coins balance:coins is_negative:bool = SetBetInfo`
+Signature: `SetBetInfo{owner:address,ton_check_book:address,delta_r:coins,balance:coins,is_negative:bool}`
 
 ## GetBetInfo
 TLB: `get_bet_info#91a1d1e2  = GetBetInfo`
 Signature: `GetBetInfo{}`
 
 ## ProcessBetInfo
-TLB: `process_bet_info#dc2bda75 accountManager:address owner:address seqno:uint256 odd_flag:bool delta_r:coins bet_amount:coins = ProcessBetInfo`
-Signature: `ProcessBetInfo{accountManager:address,owner:address,seqno:uint256,odd_flag:bool,delta_r:coins,bet_amount:coins}`
+TLB: `process_bet_info#489cac3e accountManager:address owner:address seqno:uint256 odd_flag:bool delta_r:coins bet_amount:coins is_negative:bool = ProcessBetInfo`
+Signature: `ProcessBetInfo{accountManager:address,owner:address,seqno:uint256,odd_flag:bool,delta_r:coins,bet_amount:coins,is_negative:bool}`
 
 ## InternalBetWinMessage
 TLB: `internal_bet_win_message#dea72f71 amount:coins owner_ton_wallet:address = InternalBetWinMessage`

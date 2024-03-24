@@ -512,12 +512,13 @@ export type ApplyBetMessage = {
     delta_r: bigint;
     seqno: bigint;
     odd_flag: boolean;
+    is_negative: boolean;
 }
 
 export function storeApplyBetMessage(src: ApplyBetMessage) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3741955996, 32);
+        b_0.storeUint(4260982606, 32);
         b_0.storeAddress(src.account_manager);
         b_0.storeAddress(src.owner);
         b_0.storeCoins(src.bet_amount);
@@ -525,13 +526,14 @@ export function storeApplyBetMessage(src: ApplyBetMessage) {
         let b_1 = new Builder();
         b_1.storeUint(src.seqno, 256);
         b_1.storeBit(src.odd_flag);
+        b_1.storeBit(src.is_negative);
         b_0.storeRef(b_1.endCell());
     };
 }
 
 export function loadApplyBetMessage(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3741955996) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 4260982606) { throw Error('Invalid prefix'); }
     let _account_manager = sc_0.loadAddress();
     let _owner = sc_0.loadAddress();
     let _bet_amount = sc_0.loadCoins();
@@ -539,7 +541,8 @@ export function loadApplyBetMessage(slice: Slice) {
     let sc_1 = sc_0.loadRef().beginParse();
     let _seqno = sc_1.loadUintBig(256);
     let _odd_flag = sc_1.loadBit();
-    return { $$type: 'ApplyBetMessage' as const, account_manager: _account_manager, owner: _owner, bet_amount: _bet_amount, delta_r: _delta_r, seqno: _seqno, odd_flag: _odd_flag };
+    let _is_negative = sc_1.loadBit();
+    return { $$type: 'ApplyBetMessage' as const, account_manager: _account_manager, owner: _owner, bet_amount: _bet_amount, delta_r: _delta_r, seqno: _seqno, odd_flag: _odd_flag, is_negative: _is_negative };
 }
 
 function loadTupleApplyBetMessage(source: TupleReader) {
@@ -549,7 +552,8 @@ function loadTupleApplyBetMessage(source: TupleReader) {
     let _delta_r = source.readBigNumber();
     let _seqno = source.readBigNumber();
     let _odd_flag = source.readBoolean();
-    return { $$type: 'ApplyBetMessage' as const, account_manager: _account_manager, owner: _owner, bet_amount: _bet_amount, delta_r: _delta_r, seqno: _seqno, odd_flag: _odd_flag };
+    let _is_negative = source.readBoolean();
+    return { $$type: 'ApplyBetMessage' as const, account_manager: _account_manager, owner: _owner, bet_amount: _bet_amount, delta_r: _delta_r, seqno: _seqno, odd_flag: _odd_flag, is_negative: _is_negative };
 }
 
 function storeTupleApplyBetMessage(source: ApplyBetMessage) {
@@ -560,6 +564,7 @@ function storeTupleApplyBetMessage(source: ApplyBetMessage) {
     builder.writeNumber(source.delta_r);
     builder.writeNumber(source.seqno);
     builder.writeBoolean(source.odd_flag);
+    builder.writeBoolean(source.is_negative);
     return builder.build();
 }
 
@@ -583,6 +588,7 @@ export type BetData = {
     odd_flag: boolean;
     delta_r: bigint;
     bet_amount: bigint;
+    is_negative: boolean;
 }
 
 export function storeBetData(src: BetData) {
@@ -596,6 +602,7 @@ export function storeBetData(src: BetData) {
         b_1.storeBit(src.odd_flag);
         b_1.storeCoins(src.delta_r);
         b_1.storeCoins(src.bet_amount);
+        b_1.storeBit(src.is_negative);
         b_0.storeRef(b_1.endCell());
     };
 }
@@ -610,7 +617,8 @@ export function loadBetData(slice: Slice) {
     let _odd_flag = sc_1.loadBit();
     let _delta_r = sc_1.loadCoins();
     let _bet_amount = sc_1.loadCoins();
-    return { $$type: 'BetData' as const, accountManager: _accountManager, owner: _owner, checkbook: _checkbook, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount };
+    let _is_negative = sc_1.loadBit();
+    return { $$type: 'BetData' as const, accountManager: _accountManager, owner: _owner, checkbook: _checkbook, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount, is_negative: _is_negative };
 }
 
 function loadTupleBetData(source: TupleReader) {
@@ -621,7 +629,8 @@ function loadTupleBetData(source: TupleReader) {
     let _odd_flag = source.readBoolean();
     let _delta_r = source.readBigNumber();
     let _bet_amount = source.readBigNumber();
-    return { $$type: 'BetData' as const, accountManager: _accountManager, owner: _owner, checkbook: _checkbook, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount };
+    let _is_negative = source.readBoolean();
+    return { $$type: 'BetData' as const, accountManager: _accountManager, owner: _owner, checkbook: _checkbook, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount, is_negative: _is_negative };
 }
 
 function storeTupleBetData(source: BetData) {
@@ -633,6 +642,7 @@ function storeTupleBetData(source: BetData) {
     builder.writeBoolean(source.odd_flag);
     builder.writeNumber(source.delta_r);
     builder.writeNumber(source.bet_amount);
+    builder.writeBoolean(source.is_negative);
     return builder.build();
 }
 
@@ -653,27 +663,30 @@ export type SetBetInfo = {
     ton_check_book: Address;
     delta_r: bigint;
     balance: bigint;
+    is_negative: boolean;
 }
 
 export function storeSetBetInfo(src: SetBetInfo) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(583420203, 32);
+        b_0.storeUint(4279425714, 32);
         b_0.storeAddress(src.owner);
         b_0.storeAddress(src.ton_check_book);
         b_0.storeCoins(src.delta_r);
         b_0.storeCoins(src.balance);
+        b_0.storeBit(src.is_negative);
     };
 }
 
 export function loadSetBetInfo(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 583420203) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 4279425714) { throw Error('Invalid prefix'); }
     let _owner = sc_0.loadAddress();
     let _ton_check_book = sc_0.loadAddress();
     let _delta_r = sc_0.loadCoins();
     let _balance = sc_0.loadCoins();
-    return { $$type: 'SetBetInfo' as const, owner: _owner, ton_check_book: _ton_check_book, delta_r: _delta_r, balance: _balance };
+    let _is_negative = sc_0.loadBit();
+    return { $$type: 'SetBetInfo' as const, owner: _owner, ton_check_book: _ton_check_book, delta_r: _delta_r, balance: _balance, is_negative: _is_negative };
 }
 
 function loadTupleSetBetInfo(source: TupleReader) {
@@ -681,7 +694,8 @@ function loadTupleSetBetInfo(source: TupleReader) {
     let _ton_check_book = source.readAddress();
     let _delta_r = source.readBigNumber();
     let _balance = source.readBigNumber();
-    return { $$type: 'SetBetInfo' as const, owner: _owner, ton_check_book: _ton_check_book, delta_r: _delta_r, balance: _balance };
+    let _is_negative = source.readBoolean();
+    return { $$type: 'SetBetInfo' as const, owner: _owner, ton_check_book: _ton_check_book, delta_r: _delta_r, balance: _balance, is_negative: _is_negative };
 }
 
 function storeTupleSetBetInfo(source: SetBetInfo) {
@@ -690,6 +704,7 @@ function storeTupleSetBetInfo(source: SetBetInfo) {
     builder.writeAddress(source.ton_check_book);
     builder.writeNumber(source.delta_r);
     builder.writeNumber(source.balance);
+    builder.writeBoolean(source.is_negative);
     return builder.build();
 }
 
@@ -749,12 +764,13 @@ export type ProcessBetInfo = {
     odd_flag: boolean;
     delta_r: bigint;
     bet_amount: bigint;
+    is_negative: boolean;
 }
 
 export function storeProcessBetInfo(src: ProcessBetInfo) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(3693861493, 32);
+        b_0.storeUint(1218227262, 32);
         b_0.storeAddress(src.accountManager);
         b_0.storeAddress(src.owner);
         b_0.storeUint(src.seqno, 256);
@@ -762,13 +778,14 @@ export function storeProcessBetInfo(src: ProcessBetInfo) {
         b_0.storeCoins(src.delta_r);
         let b_1 = new Builder();
         b_1.storeCoins(src.bet_amount);
+        b_1.storeBit(src.is_negative);
         b_0.storeRef(b_1.endCell());
     };
 }
 
 export function loadProcessBetInfo(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 3693861493) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1218227262) { throw Error('Invalid prefix'); }
     let _accountManager = sc_0.loadAddress();
     let _owner = sc_0.loadAddress();
     let _seqno = sc_0.loadUintBig(256);
@@ -776,7 +793,8 @@ export function loadProcessBetInfo(slice: Slice) {
     let _delta_r = sc_0.loadCoins();
     let sc_1 = sc_0.loadRef().beginParse();
     let _bet_amount = sc_1.loadCoins();
-    return { $$type: 'ProcessBetInfo' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount };
+    let _is_negative = sc_1.loadBit();
+    return { $$type: 'ProcessBetInfo' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount, is_negative: _is_negative };
 }
 
 function loadTupleProcessBetInfo(source: TupleReader) {
@@ -786,7 +804,8 @@ function loadTupleProcessBetInfo(source: TupleReader) {
     let _odd_flag = source.readBoolean();
     let _delta_r = source.readBigNumber();
     let _bet_amount = source.readBigNumber();
-    return { $$type: 'ProcessBetInfo' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount };
+    let _is_negative = source.readBoolean();
+    return { $$type: 'ProcessBetInfo' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount, is_negative: _is_negative };
 }
 
 function storeTupleProcessBetInfo(source: ProcessBetInfo) {
@@ -797,6 +816,7 @@ function storeTupleProcessBetInfo(source: ProcessBetInfo) {
     builder.writeBoolean(source.odd_flag);
     builder.writeNumber(source.delta_r);
     builder.writeNumber(source.bet_amount);
+    builder.writeBoolean(source.is_negative);
     return builder.build();
 }
 
@@ -1592,8 +1612,8 @@ function initTONCheckBook_init_args(src: TONCheckBook_init_args) {
 }
 
 async function TONCheckBook_init(accountManager: Address, owner: Address) {
-    const __code = Cell.fromBase64('te6ccgECHQEABa4AART/APSkE/S88sgLAQIBYgIDA3jQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxa2zzy4IIaBAUCASAREgTkAY4wgCDXIXAh10nCH5UwINcLH96CEAuml1G6jhPTHwGCEAuml1G68uCB+gABMTB/4DB/4HAh10nCH5UwINcLH94gwAAi10nBIbCSW3/gIIIQC6aXUbrjAiCCEN8Jt5y6jwgw2zxsFts8f+CCEJRqmLa6BgcICQCWyPhDAcx/AcoAWVkg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxYBINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8Wye1UA4Yw0x8BghALppdRuvLggfoAATFZ2zyBPJ74J28QggnJw4C88vT4QvgnbxCCCcnDgKFQBLYIgEJ/iBBGFEMwbW3bPAF/CgsPAMLTHwGCEN8Jt5y68uCB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAfoA+gDUAdDT/9IAMBAmECUQJBAjAtSCAO5b+CdvECWCCcnDgKC88vT4QwNGZts8XHBZyHABywFzAcsBcAHLABLMzMn5AMhyAcsBcAHLABLKB8v/ydAg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCII4IJycOAoHJ/+CgQOECXDA0BWI6n0x8BghCUapi2uvLggdM/ATHIAYIQr/kPV1jLH8s/yfhCAXBt2zx/4DBwDgAS+EJSEMcF8uCEAEIAAAAATW9uZXkgc3VjY2Vzc2Z1bGx5IHdpdGhkcmF3ZWQArgPQ9AQwbQGCALkBAYAQ9A9vofLghwGCALkBIgKAEPQXyAHI9ADJAcxwAcoAVSAEWiDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFhKBAQHPAMoAyQLayFUwghAixkkrUAXLH1ADINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFgH6AgH6AslABgMQNhA1EDQB2zz4QnCBAIJ/VSBtbW3bPA8PATptbSJus5lbIG7y0IBvIgGRMuIQJHADBIBCUCPbPA8ByshxAcoBUAcBygBwAcoCUAUg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxZQA/oCcAHKaCNus5F/kyRus+KXMzMBcAHKAOMNIW6znH8BygABIG7y0IABzJUxcAHKAOLJAfsAEACYfwHKAMhwAcoAcAHKACRus51/AcoABCBu8tCAUATMljQDcAHKAOIkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDicAHKAAJ/AcoAAslYzAIRviju2ebZ42EMGhMCASAUFQACIAC5u70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwnZdOWrNOy3M6DpZtlGbopIJwQM51aecV+dJQsB1hbiZHsoAgEgFhcCASAYGQIRtwbbZ5tnjYQwGhsAEbCvu1E0NIAAYAB1sm7jQ1aXBmczovL1FtV2lrRnFvRzZCdTZmMlNuZHp5U1NkeXdnN1loaXYxV2RqNGpXR1B4RVBBd2uCABtO1E0NQB+GPSAAGOQvpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiBJsEuD4KNcLCoMJuvLgiRwACPgnbxAAhvpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiBIC0QE=');
-    const __system = Cell.fromBase64('te6cckECOgEACocAAQHAAQIBWBsCAQW54igDART/APSkE/S88sgLBAIBYg4FAgEgDAYCASALBwIBIAkIAhG3Bttnm2eNhDAZIgIBICUKAHWybuNDVpcGZzOi8vUW1XaWtGcW9HNkJ1NmYyU25kenlTU2R5d2c3WWhpdjFXZGo0aldHUHhFUEF3a4IAC5u70YJwXOw9XSyuex6E7DnWSoUbZoJwndY1LStkfLMi068t/fFiOYJwIFXAG4BnY5TOWDquRyWyw4JwnZdOWrNOy3M6DpZtlGbopIJwQM51aecV+dJQsB1hbiZHsoAhG+KO7Z5tnjYQwZDQACIAN40AHQ0wMBcbCjAfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IhUUFMDbwT4YQL4Yts8Wts88uCCGRAPAJbI+EMBzH8BygBZWSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFgEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxbJ7VQE5AGOMIAg1yFwIddJwh+VMCDXCx/eghALppdRuo4T0x8BghALppdRuvLggfoAATEwf+Awf+BwIddJwh+VMCDXCx/eIMAAItdJwSGwklt/4CCCEAuml1G64wIgghDfCbecuo8IMNs8bBbbPH/gghCUapi2uhYVEhEBWI6n0x8BghCUapi2uvLggdM/ATHIAYIQr/kPV1jLH8s/yfhCAXBt2zx/4DBwMwLUggDuW/gnbxAlggnJw4CgvPL0+EMDRmbbPFxwWchwAcsBcwHLAXABywASzMzJ+QDIcgHLAXABywASygfL/8nQINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiCOCCcnDgKByf/goEDhAlxQTAtrIVTCCECLGSStQBcsfUAMg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxYBINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WAfoCAfoCyUAGAxA2EDUQNAHbPPhCcIEAgn9VIG1tbds8NTUArgPQ9AQwbQGCALkBAYAQ9A9vofLghwGCALkBIgKAEPQXyAHI9ADJAcxwAcoAVSAEWiDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFhKBAQHPAMoAyQDC0x8BghDfCbecuvLggfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAH6APoA1AHQ0//SADAQJhAlECQQIwOGMNMfAYIQC6aXUbry4IH6AAExWds8gTye+CdvEIIJycOAvPL0+EL4J28QggnJw4ChUAS2CIBCf4gQRhRDMG1t2zwBfxgXNQBCAAAAAE1vbmV5IHN1Y2Nlc3NmdWxseSB3aXRoZHJhd2VkABL4QlIQxwXy4IQBtO1E0NQB+GPSAAGOQvpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiBJsEuD4KNcLCoMJuvLgiRoAhvpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiBIC0QEBBbuQGBwBFP8A9KQT9LzyyAsdAgFiLB4CASAqHwIBICYgAgEgIyECEbcG22ebZ42OMDciAAj4J28QAgEgJSQAdbJu40NWlwZnM6Ly9RbWNOQ2tQWGpVWHhjU0Zpa3RyWGloRWFzY1NEM0ZkTVpoZDZBaXpzeDRUZERKggABGwr7tRNDSAAGACASAoJwCVt3owTgudh6ullc9j0J2HOslQo2zQThO6xqWlbI+WZFp15b++LEcwTgQKuANwDOxymcsHVcjktlhwThOy6ctWadluZ0HSzbKM3RSQAhG0t1tnm2eNjvA3KQAOVHZUVHZUJgIRvwS22ebZ42OMNysABPgoA37QAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxVFts88uCC2zw3Ly0B9sj4QwHMfwHKAFVgUHYg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxZQBCDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlgg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxYByMv/EsoAUAP6AgH6AskBzC4ABsntVAPO7aLt+wGSMH/gcCHXScIflTAg1wsf3iDAACLXScEhsJJbf+AgghAixkkruuMCIIIQlGqYtrqOqDDTHwGCEJRqmLa68uCB0z8BMcgBghCv+Q9XWMsfyz/J+EIBcG3bPH/gwACRMOMNcDQzMAP6+QEggvAsz0mPfN9AjwYuKWxt98CCgN14NzZl62s4SDPMFMcocrqPUzCCCvrwgHJ/UzjIWYIQ3qcvcVADyx8B+gIBINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WySpVMBRDMG1t2zwkcIEAgn9VIG1tbds8f9sx4CA1NTED+ILwUx2iyj+UDXcTSJF8AIea7qPOzLzivaGP47j2+T270Q66jpEwJnCBAIJ/VSBtbW3bPH/bMeCC8MOSSWdsWpUfcVF614RlX6lcKuTOLHPlPK3wtHpMPj+quo8f+EKCCTEtAHJ/VHqXVHmHyFVQ2zzJFEMwbW3bPH/bMeA1MjUAsIIQ3CvadVAHyx9QBSDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlADINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8Wy//KAAH6AshY+gLJAcwBOm1tIm6zmVsgbvLQgG8iAZEy4hAkcAMEgEJQI9s8NQH6MNMfAYIQIsZJK7ry4IH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+gD6AFUwbBQ0NDY2cH+AQlNlyFmCEBLsQVpQA8sfy//KAMkqVTAQJBAjbW3bPH81AcrIcQHKAVAHAcoAcAHKAlAFINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WUAP6AnABymgjbrORf5MkbrPilzMzAXABygDjDSFus5x/AcoAASBu8tCAAcyVMXABygDiyQH7ADYAmH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMwCiu1E0NQB+GPSAAHjAvgo1wsKgwm68uCJ+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAGBAQHXANIAVSAD0VjbPDk4ABRTInAgEDZeIhAjAOj6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAHUAdDT/9IA+gD6ADAQRxBGEEVsFx+fx68=');
+    const __code = Cell.fromBase64('te6ccgECHQEABbUAART/APSkE/S88sgLAQIBYgIDA3jQAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxa2zzy4IIaBAUCASAREgTkAY4wgCDXIXAh10nCH5UwINcLH96CEAuml1G6jhPTHwGCEAuml1G68uCB+gABMTB/4DB/4HAh10nCH5UwINcLH94gwAAi10nBIbCSW3/gIIIQC6aXUbrjAiCCEP35b066jwgw2zxsF9s8f+CCEJRqmLa6BgcICQCWyPhDAcx/AcoAWVkg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxYBINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8Wye1UA4Yw0x8BghALppdRuvLggfoAATFZ2zyBPJ74J28QggnJw4C88vT4QvgnbxCCCcnDgKFQBLYIgEJ/iBBGFEMwbW3bPAF/CgsPAMbTHwGCEP35b0668uCB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiAH6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAfoA+gDUAdDT/9IA0gAwEDcQNhA1EDQC2IIA7lv4J28QJoIJycOAoLzy9PhDRzMH2zxccFnIcAHLAXMBywFwAcsAEszMyfkAyHIBywFwAcsAEsoHy//J0CDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgkggnJw4Cgcn/4KBBJRxNQigwNAViOp9MfAYIQlGqYtrry4IHTPwExyAGCEK/5D1dYyx/LP8n4QgFwbds8f+AwcA4AEvhCUhDHBfLghABCAAAAAE1vbmV5IHN1Y2Nlc3NmdWxseSB3aXRoZHJhd2VkAK4D0PQEMG0BggC5AQGAEPQPb6Hy4IcBggC5ASICgBD0F8gByPQAyQHMcAHKAFUgBFog10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxYSgQEBzwDKAMkC4MhVQIIQ/xLaslAGyx9QBCDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFlgg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIzxYB+gIB+gLKAMkQVhA0AhA2EDUQNAHbPPhCcIBCf1UgbW1t2zwPDwE6bW0ibrOZWyBu8tCAbyIBkTLiECRwAwSAQlAj2zwPAcrIcQHKAVAHAcoAcAHKAlAFINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8WUAP6AnABymgjbrORf5MkbrPilzMzAXABygDjDSFus5x/AcoAASBu8tCAAcyVMXABygDiyQH7ABAAmH8BygDIcAHKAHABygAkbrOdfwHKAAQgbvLQgFAEzJY0A3ABygDiJG6znX8BygAEIG7y0IBQBMyWNANwAcoA4nABygACfwHKAALJWMwCEb4o7tnm2eNhDBoTAgEgFBUAAiAAubu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcJ2XTlqzTstzOg6WbZRm6KSCcEDOdWnnFfnSULAdYW4mR7KAIBIBYXAgEgGBkCEbcG22ebZ42EMBobABGwr7tRNDSAAGAAdbJu40NWlwZnM6Ly9RbWZCREttSmtiOVJvZzVEQ29oY25aU1QxWVIzUzRCNlltZFZFMW1yeHdWY3M4ggAbTtRNDUAfhj0gABjkL6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgSbBLg+CjXCwqDCbry4IkcAAj4J28QAIb6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgSAtEB');
+    const __system = Cell.fromBase64('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');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -1650,11 +1670,11 @@ const TONCheckBook_types: ABIType[] = [
     {"name":"ChangeOwnerOk","header":846932810,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"Mint","header":1519427335,"fields":[{"name":"amount","type":{"kind":"simple","type":"int","optional":false,"format":257}},{"name":"to","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"CreateNewBlock","header":4244186966,"fields":[{"name":"course","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"ApplyBetMessage","header":3741955996,"fields":[{"name":"account_manager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}}]},
-    {"name":"BetData","header":null,"fields":[{"name":"accountManager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"checkbook","type":{"kind":"simple","type":"address","optional":false}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"SetBetInfo","header":583420203,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"ton_check_book","type":{"kind":"simple","type":"address","optional":false}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"balance","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"ApplyBetMessage","header":4260982606,"fields":[{"name":"account_manager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"is_negative","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"BetData","header":null,"fields":[{"name":"accountManager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"checkbook","type":{"kind":"simple","type":"address","optional":false}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"is_negative","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"SetBetInfo","header":4279425714,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"ton_check_book","type":{"kind":"simple","type":"address","optional":false}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"balance","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"is_negative","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"GetBetInfo","header":2443301346,"fields":[]},
-    {"name":"ProcessBetInfo","header":3693861493,"fields":[{"name":"accountManager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"ProcessBetInfo","header":1218227262,"fields":[{"name":"accountManager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"is_negative","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"InternalBetWinMessage","header":3735498609,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"owner_ton_wallet","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"Balance","header":15493955,"fields":[{"name":"balance","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
     {"name":"InitMinter","header":3972604618,"fields":[{"name":"content","type":{"kind":"simple","type":"cell","optional":true}}]},

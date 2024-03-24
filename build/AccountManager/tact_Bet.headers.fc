@@ -37,13 +37,13 @@ builder $DeployOk$_store(builder build_0, (int) v) inline;
 cell $DeployOk$_store_cell((int) v) inline;
 
 ;; $SetBetInfo$_load
-(slice, ((slice, slice, int, int))) $SetBetInfo$_load(slice sc_0) inline;
+(slice, ((slice, slice, int, int, int))) $SetBetInfo$_load(slice sc_0) inline;
 
 ;; $ProcessBetInfo$_store
-builder $ProcessBetInfo$_store(builder build_0, (slice, slice, int, int, int, int) v) inline_ref;
+builder $ProcessBetInfo$_store(builder build_0, (slice, slice, int, int, int, int, int) v) inline_ref;
 
 ;; $ProcessBetInfo$_store_cell
-cell $ProcessBetInfo$_store_cell((slice, slice, int, int, int, int) v) inline;
+cell $ProcessBetInfo$_store_cell((slice, slice, int, int, int, int, int) v) inline;
 
 ;; $InternalBetWinMessage$_store
 builder $InternalBetWinMessage$_store(builder build_0, (int, slice) v) inline;
@@ -58,52 +58,52 @@ builder $IncrementCurrentBlockCount$_store(builder build_0, (int, int) v) inline
 cell $IncrementCurrentBlockCount$_store_cell((int, int) v) inline;
 
 ;; $Bet$_store
-builder $Bet$_store(builder build_0, (slice, slice, slice, int, int, int, int) v) inline;
+builder $Bet$_store(builder build_0, (slice, slice, slice, int, int, int, int, int) v) inline;
 
 ;; $Bet$_load
-(slice, ((slice, slice, slice, int, int, int, int))) $Bet$_load(slice sc_0) inline;
+(slice, ((slice, slice, slice, int, int, int, int, int))) $Bet$_load(slice sc_0) inline;
 
 ;; $StateInit$_not_null
 ((cell, cell)) $StateInit$_not_null(tuple v) inline;
 
 ;; $BetData$_to_external
-(slice, slice, slice, int, int, int, int) $BetData$_to_external(((slice, slice, slice, int, int, int, int)) v) inline;
+(slice, slice, slice, int, int, int, int, int) $BetData$_to_external(((slice, slice, slice, int, int, int, int, int)) v) inline;
 
 ;; $Bet$init$_load
 (slice, ((slice, int, int))) $Bet$init$_load(slice sc_0) inline;
 
 ;; $Bet$_contract_init
-(slice, slice, slice, int, int, int, int) $Bet$_contract_init(slice $accountManager, int $seqno, int $odd_flag) impure inline_ref;
+(slice, slice, slice, int, int, int, int, int) $Bet$_contract_init(slice $accountManager, int $seqno, int $odd_flag) impure inline_ref;
 
 ;; $Bet$_contract_load
-(slice, slice, slice, int, int, int, int) $Bet$_contract_load() impure inline_ref;
+(slice, slice, slice, int, int, int, int, int) $Bet$_contract_load() impure inline_ref;
 
 ;; $Bet$_contract_store
-() $Bet$_contract_store((slice, slice, slice, int, int, int, int) v) impure inline;
+() $Bet$_contract_store((slice, slice, slice, int, int, int, int, int) v) impure inline;
 
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
-;; $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount
-((slice, slice, slice, int, int, int, int)) $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount(slice accountManager, slice owner, slice checkbook, int seqno, int odd_flag, int delta_r, int bet_amount) inline;
+;; $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount_is_negative
+((slice, slice, slice, int, int, int, int, int)) $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount_is_negative(slice accountManager, slice owner, slice checkbook, int seqno, int odd_flag, int delta_r, int bet_amount, int is_negative) inline;
 
 ;; $Bet$_fun_BetData
-((slice, slice, slice, int, int, int, int), (slice, slice, slice, int, int, int, int)) $Bet$_fun_BetData((slice, slice, slice, int, int, int, int) $self) impure inline_ref;
+((slice, slice, slice, int, int, int, int, int), (slice, slice, slice, int, int, int, int, int)) $Bet$_fun_BetData((slice, slice, slice, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $Bet$_fun_Balance
-((slice, slice, slice, int, int, int, int), int) $Bet$_fun_Balance((slice, slice, slice, int, int, int, int) $self) impure inline_ref;
+((slice, slice, slice, int, int, int, int, int), int) $Bet$_fun_Balance((slice, slice, slice, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $Bet$_fun_Address
-((slice, slice, slice, int, int, int, int), slice) $Bet$_fun_Address((slice, slice, slice, int, int, int, int) $self) impure inline_ref;
+((slice, slice, slice, int, int, int, int, int), slice) $Bet$_fun_Address((slice, slice, slice, int, int, int, int, int) $self) impure inline_ref;
 
 ;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
 
 ;; $Bet$_fun_forward
-((slice, slice, slice, int, int, int, int), ()) $Bet$_fun_forward((slice, slice, slice, int, int, int, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
+((slice, slice, slice, int, int, int, int, int), ()) $Bet$_fun_forward((slice, slice, slice, int, int, int, int, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
 ;; $Bet$_fun_notify
-((slice, slice, slice, int, int, int, int), ()) $Bet$_fun_notify((slice, slice, slice, int, int, int, int) $self, cell $body) impure inline;
+((slice, slice, slice, int, int, int, int, int), ()) $Bet$_fun_notify((slice, slice, slice, int, int, int, int, int) $self, cell $body) impure inline;
 
 ;; $SendParameters$_constructor_to_value_bounce_mode_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_bounce_mode_body(slice to, int value, int bounce, int mode, cell body) inline;
@@ -120,8 +120,8 @@ builder $Bet$_store(builder build_0, (slice, slice, slice, int, int, int, int) v
 ;; $SendParameters$_constructor_to_value_mode_bounce
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce(slice to, int value, int mode, int bounce) inline;
 
-;; $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount
-((slice, slice, int, int, int, int)) $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount(slice accountManager, slice owner, int seqno, int odd_flag, int delta_r, int bet_amount) inline;
+;; $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount_is_negative
+((slice, slice, int, int, int, int, int)) $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount_is_negative(slice accountManager, slice owner, int seqno, int odd_flag, int delta_r, int bet_amount, int is_negative) inline;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int queryId) inline;

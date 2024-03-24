@@ -32,7 +32,7 @@ export function useAccountManagerContract() {
     const {client} = useTonClient()
     const {wallet_address, sender} = useTonConnect()
     const { accountManagerAddress, minterAddress} = getConfig()
-    const { admin_wallet_address, send_text_message } = useAdminWallet()
+    const {admin_sender, admin_wallet_address, admin_wallet, send_text_message } = useAdminWallet()
     const [jettonBalance, setBalance] = useState<string | null>()
     const [tonCheckBookBalance, setCheckBookBalance] = useState<string | null>()
     const [new_bets, updateNewBets] = useState<BetData[] | null>()
@@ -207,7 +207,17 @@ export function useAccountManagerContract() {
                 value: toNano("0.2")
             }, message)
         }, 
-        create_bet: async (amount: string, delta_r: string) => {
+        create_bet: async (delta_r: number) => {
+            if (!TonCheckBookContract) return;
+
+            let is_negative_flag = false;
+            if (delta_r < 0){
+                is_negative_flag = true
+                delta_r = delta_r * -1;
+            }
+
+            let balance = Number(await TonCheckBookContract!.getBalance())
+            let bet_amount = BigInt(Math.floor(balance * delta_r))
             console.log("Creating New Bet")
             if (!wallet_address) {
                 console.log("No valid sender")
@@ -224,48 +234,95 @@ export function useAccountManagerContract() {
                 console.log("Flag: ", flag)
                 console.log("Seqno: ", seqno)
                 return}
-            console.log(sender.address);
+
+            console.log("Flag: ", flag)
+            console.log("Seqno: ", seqno)
+
+            console.log("Sender: ", sender.address, "Bet ammount", bet_amount, " Delta: ", delta_r, " Is negative: ", is_negative_flag);
             const message: ApplyBetMessage = {
                 $$type: "ApplyBetMessage",
                 account_manager: accountManagerContract!.address,
                 owner: Address.parse(wallet_address!.toString()),
-                bet_amount: toNano(amount),
-                delta_r: toNano(delta_r),
+                bet_amount: bet_amount,
+                delta_r: toNano(BigInt(delta_r*1000)), // TODO: Минимальный шаг - тысячная процента
                 seqno: seqno + 1n,
-                odd_flag: flag
+                odd_flag: flag,
+                is_negative: is_negative_flag
             }
-            console.log("Make bet with seqno: ", seqno, "And flag: ", flag)
+            console.log("Make bet with seqno: ", seqno + 1n, "And flag: ", flag)
+            let result_flag = false;
+            while (!result_flag){
+                try {
+                    let trans = TonCheckBookContract?.send(admin_sender!, {
+                        value: toNano("3")
+                    }, message)
+                    result_flag = true
+                    console.log("Transaction applyed", trans)
+                } catch (error: any|undefined){
+                    console.error(Error(error).message);
+                }
+            }
+            
+            let user_delta = delta_r
+            if (is_negative_flag) {
+                user_delta *= -1
+            }
 
-            TonCheckBookContract?.send(sender, {
-                value: toNano("3")
-            }, message)
+            const response = await fetch("http://81.31.245.206:5000/user", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json' // Убедитесь, что используете этот заголовок
+                },
+                body: JSON.stringify({
+                    "wallet_address": wallet_address!.toString(),
+                    "round_amount": 1,
+                    "delta_r": user_delta
+                })
+            });
+
         },
 
         deploy: () => {
+            console.log("deploying")
             if (!TonCheckBookContract) {
                 console.log("No TonCheckBookContract");
                 return;
             }
-            TonCheckBookContract?.send(
-                sender,
-                {
-                    value: toNano("0.1"),
-                }, {
-                    $$type: "Deploy",
-                    queryId: 0n,
-                }
-
-            )
-
-            sender.send({
-                to: TonCheckBookContract!.address,
-                value: toNano("0.1"),
-                init: {
-                    code: TonCheckBookContract.init?.code,
-                    data: TonCheckBookContract.init?.data
+            let result_flag = false
+            while (!result_flag) {
+                try {
+                    TonCheckBookContract?.send(
+                    admin_sender!,
+                    {
+                        value: toNano("0.1"),
+                    }, {
+                        $$type: "Deploy",
+                        queryId: 0n,
                     }
+                    )
+                    result_flag = true
+                } catch (error: any|undefined) {
+                    console.error(Error(error).message)
                 }
-            )
+            }
+            result_flag = false
+            while (!result_flag) {
+                try {
+                    admin_sender!.send({
+                        to: TonCheckBookContract!.address,
+                        value: toNano("0.1"),
+                        init: {
+                            code: TonCheckBookContract.init?.code,
+                            data: TonCheckBookContract.init?.data
+                            }
+                        }
+                    )
+                    result_flag = true
+                } catch (error: any|undefined) {
+                    console.error(Error(error).message)
+                }
+            }
+            
         },
 
         deploy_check_book: (
@@ -314,8 +371,29 @@ export function useAccountManagerContract() {
             },
 
         create_new_block: async(stringcourse: string) => {
+            let ton_course = 0
+            let bnb_course = 0
+
+            await fetch("https://tonapi.io/v2/rates?tokens=ton&currencies=usd", {
+                method: "GET"
+            }).then(response => response.json()).then(async course => {
+                ton_course = course["rates"]["TON"]["prices"]["USD"]
+            })
+
+            await fetch("https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT", {
+                method: "GET"
+            }).then(response => response.json()).then(async course => {
+                bnb_course = course["price"]
+            })
+
+            console.log("Current BNB / TON course: ", ton_course / bnb_course)
+
+
+
             console.log('Creating')
-            let course = BigInt(stringcourse)
+            // let course = BigInt(stringcourse)
+            
+            let course = BigInt(Math.floor(ton_course / bnb_course * 1e12))
             console.log("Current course: ", course)
 
             const abs = (n:bigint) => (n < 0n) ? -n : n;
@@ -326,19 +404,23 @@ export function useAccountManagerContract() {
             let old_course = await accountManagerContract.getOldBlockCourse()
             let new_course = await accountManagerContract.getNewBlockCourse()
 
-            console.log("Old course: ", old_course, " New course: ", new_course, " delta: ", new_course - old_course )
+            // Make decision about bets
+            console.log("Old course: ", new_course, " New course: ", course,  " delta: ", course - new_course )
 
-            let oracul_delta = new_course - old_course;
+            if (new_course == 0n) {
+                new_course = 1n
+            } 
+            let oracul_delta: Number = ((Number(course / new_course) - 1) * 100)*1000
 
             let deltas = [];
 
             for (let i = 1n; i < bet_amount+1n; i++){
                 let bet_address = await accountManagerContract.getBetAddressBySeqnoInApplyedBlock(i)
                 let current_bet = client?.open(await Bet.fromAddress(bet_address!))
-                let bet_data = current_bet?.getBetData()
-                let delta = (await bet_data!).delta_r
+                let bet_data = await current_bet?.getBetData()
+                let delta: Number = Number((bet_data!).delta_r)
 
-                let mistake = abs(oracul_delta - delta);
+                let mistake = abs(BigInt(Number(oracul_delta) - Number(delta)));
 
                 deltas.push(mistake);
             }
@@ -348,16 +430,13 @@ export function useAccountManagerContract() {
             let median_value = medianBigInt(deltas)
             if (median_value){
                 console.log("Median mistake: ", fromNano(median_value!))
-
-                
-
                 for (let i = 1n; i < bet_amount+1n; i++){
                     let bet_address = await accountManagerContract.getBetAddressBySeqnoInApplyedBlock(i)
                     let current_bet = client?.open(await Bet.fromAddress(bet_address!))
                     let bet_data = current_bet?.getBetData()
                     let delta = (await bet_data!).delta_r
 
-                    let mistake = abs(oracul_delta - delta);
+                    let mistake = abs(BigInt(Number(oracul_delta) - Number(delta)));
 
                     if (mistake <= median_value!){
                         let cur_message = [internal({
@@ -367,7 +446,6 @@ export function useAccountManagerContract() {
                             bounce: false
                         })]
                         messages.push(cur_message)
-                        // send_text_message(bet_address, "Win")
                         console.log("Bet Win: ", bet_address.toString(), " Mistake: ", fromNano(mistake))
                     } else {
                         let cur_message = [internal({
@@ -377,7 +455,6 @@ export function useAccountManagerContract() {
                             bounce: false
                         })]
                         messages.push(cur_message)
-                        // send_text_message(bet_address, "Lose")
                         console.log("Bet Loose: ", bet_address.toString(), " Mistake: ", fromNano(mistake))
                     }
                 }
@@ -386,38 +463,164 @@ export function useAccountManagerContract() {
                 console.log("Median mistake: none. No bets in prev block")
             }
 
-            // const body:CreateNewBlock = {
-            //     $$type: "CreateNewBlock",
-            //     course: course
-            //     }
-
-            // let cur_mesage = [internal({
-            //     to: accountManagerContract.address,
-            //     value: toNano("0.05"),
-            //     body: body,
-            //     bounce: false
-            // })]
-
-            // messages.push(cur_mesage);
-
-            let flag = await send_text_message(messages)
-            if (!flag){
+            let messages_flag = await send_text_message(messages)
+            if (!messages_flag){
                 console.log("Transaction error")
                 return
             }
 
+
+
+            // Create New Block
             console.log("Transactions confirmed")
             console.log("Creating new block")
 
-            accountManagerContract?.send(
-                sender, 
-                {
-                value: toNano("0.1")
-                },
-                {
-                    $$type: "CreateNewBlock",
-                    course: course
+            let seqno_flag = false
+            while (!seqno_flag) {
+                let wallet_contract = client?.open(admin_wallet!)
+                const seqno = await wallet_contract!.getSeqno();
+                try{
+                    console.log("Current wallet seqno: ", seqno)
+                    const NewBlockResult = accountManagerContract?.send(
+                        admin_sender!, 
+                        {
+                        value: toNano("0.1")
+                        },
+                        {
+                            $$type: "CreateNewBlock",
+                            course: course
+                        })
+                    console.log("New block Applyed", NewBlockResult)
+                } catch (error) {
+                    console.log("Error occured: ", (error as Error).message);
+                    continue
+                }
+                
+                try{
+                    let currentSeqno = seqno;
+                    while (currentSeqno == seqno) {
+                        console.log("waiting for transaction to confirm...");
+                        await sleep(1500);
+                        currentSeqno = await wallet_contract!.getSeqno();
+                    }
+                    console.log("New block confirmed!");
+                    seqno_flag = true
+                } catch (error) {
+                    console.log("Error occured: ", (error as Error).message);
+                }
+            }
+
+
+            // Update db
+            await fetch("http://81.31.245.206:5000/create_block", {
+                method: "POST"
+            })
+
+            await sleep(20000)
+
+            // Apply Auto bets
+            await fetch("http://81.31.245.206:5000/users", {
+                    method: "GET",
+                }).then(response => response.json()).then(async users =>{
+                    for (const user of users) {
+                        let checkBook = client?.open(await TONCheckBook.fromAddress(await accountManagerContract.getTonCheckBookAddress(Address.parse(user["wallet_address"])))) as OpenedContract<TONCheckBook>
+                        let seqno_new_block_bet = await accountManagerContract?.getMaxBetIdInCurrentBlock()
+                        
+                        while (seqno_new_block_bet === undefined){
+                            seqno_new_block_bet = await accountManagerContract?.getMaxBetIdInCurrentBlock()
+                            await sleep(200)
+                        }
+                        
+                        let odd_flag_new_block_bet = await accountManagerContract?.getCurrentBlockOddFlag()
+                        
+                        while (odd_flag_new_block_bet === undefined){
+                            odd_flag_new_block_bet = await accountManagerContract?.getCurrentBlockOddFlag()
+                            await sleep(200)
+                        }
+
+                        let checkBook_balance = await checkBook.getBalance()
+
+                        while (checkBook_balance === undefined){
+                            checkBook_balance = await checkBook.getBalance()
+                            await sleep(200)
+                        }
+
+                        let is_negative_flag = false
+                        if (user["old_delta_r"] < 0) {
+                            is_negative_flag = true
+                            user["old_delta_r"] = user["old_delta_r"] * -1
+                        }
+
+                        console.log("Balance: ", checkBook_balance, " Delta: ", user["old_delta_r"])
+                        let bet_amount = BigInt(Math.floor(Number(checkBook_balance) * Number(user["old_delta_r"])))
+                        console.log("Bet Amount: ", bet_amount, " In nano: ", fromNano(bet_amount))
+                        console.log("Seqno: ", seqno_new_block_bet + 1n, "Odd flag: ", odd_flag_new_block_bet)
+
+
+                        let message_bet: ApplyBetMessage = {
+                            $$type: "ApplyBetMessage",
+                            account_manager: accountManagerContract!.address,
+                            owner: Address.parse(user["wallet_address"]),
+                            bet_amount: BigInt(bet_amount),
+                            delta_r: toNano(user["old_delta_r"] * 1000), // TODO: Минимальный шаг - тысячная процента
+                            seqno: seqno_new_block_bet + 1n,
+                            odd_flag: odd_flag_new_block_bet,
+                            is_negative: is_negative_flag
+                        }
+
+
+                        let seqno_flag = false
+                        console.log("Applying new bet")
+                        while (!seqno_flag) {
+                            let wallet_contract = client?.open(admin_wallet!)
+                            const cur_seqno = await wallet_contract!.getSeqno();
+
+                            try{
+                                console.log("Current wallet seqno: ", cur_seqno)
+                                let trans = await checkBook.send(
+                                    admin_sender!, {
+                                    value: toNano("3")
+                                }, message_bet)
+                                console.log("Current transactions: ", trans)
+                                console.log("Bet applyed")
+                            } catch (error) {
+                                console.log("Error occured: ", (error as Error).message);
+                                continue
+                            }
+                            
+                            try{
+                                let currentSeqno = cur_seqno;
+                                while (currentSeqno == cur_seqno) {
+                                    console.log("waiting for transaction to confirm...");
+                                    await sleep(1500);
+                                    currentSeqno = await wallet_contract!.getSeqno();
+                                }
+                                console.log("Bet confirmed!");
+                                seqno_flag = true
+                            } catch (error) {
+                                console.log("Error occured: ", (error as Error).message);
+                            }
+                        }
+
+
+                        console.log("Delta R       : ", user["old_delta_r"])
+                        console.log("ID            : ", user["id"])
+                        console.log("Wallet Address: ", user["wallet_address"])
+                        console.log("Round amount  : ", user["round_amount"])
+                        console.log("Is negative   : ", is_negative_flag)
+                    }
                 })
+
+
+            // Decision from DB
+            let url = new URL("http://81.31.245.206:5000/make_decision")
+            url.searchParams.append("course_delta", Number(new_course - old_course).toString())
+            await fetch(url.toString(), {
+                method: "GET",
+            }).then(response => response.json()).then(async users => {
+                console.log(users["win_users"])
+                console.log(users["lose_users"])
+            })
         },
 
         win_bet: async(bet_address: string) => {

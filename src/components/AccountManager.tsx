@@ -18,19 +18,19 @@ export function AccountManager() {
     const { wallet_address, ton_balance } = getTonWalletInfo()
     const { AccountManagerAddress, minterAddress, jettonWalletAddress, jettonBalance, TONCheckBookAddress, TONCheckBookBalance, admin_wallet_address, mint, create_bet, deploy, deploy_check_book, deposit_check_book, withdraw_check_book, create_new_block, new_bets, old_bets, win_bet, lose_bet } = useAccountManagerContract()
 
-    const [amount, setAmountValue] = useState('');
-    const [delta, setDeltaValue] = useState('');
+    const [round_amount, setRoundAmountValue] = useState(0);
+    const [delta, setDeltaValue] = useState(0);
     const [deposit, setDepositValue] = useState('');
     const [win_bet_address, setWinValue] = useState('');
     const [lose_bet_address, setLoseValue] = useState('');
     const [course, setCourseValue] = useState('');
 
-    const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAmountValue(e.target.value);
+    const handleRoundAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setRoundAmountValue(Number(e.target.value));
     };
 
     const handleDeltaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDeltaValue(e.target.value);
+        setDeltaValue(Number(e.target.value));
     };
 
     const handleDepositChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,9 +51,9 @@ export function AccountManager() {
 
     const handleSubmitCreateBet = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Предотвращение стандартного поведения формы
-        create_bet(amount, delta); // Вызов функции с значением из состояния
-        setAmountValue(''); // Опционально: очистка поля ввода после отправки
-        setDeltaValue('');
+        create_bet(delta); // Вызов функции с значением из состояния
+        setRoundAmountValue(0); // Опционально: очистка поля ввода после отправки
+        setDeltaValue(0);
     };
 
     const handleSubmitDeposit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -138,12 +138,7 @@ export function AccountManager() {
                 </Button>
                 <form onSubmit={handleSubmitCreateBet}>
                     <input
-                        type="text"
-                        value={amount}
-                        onChange={handleAmountChange}
-                    />
-                    <input
-                        type="text"
+                        type="number"
                         value={delta}
                         onChange={handleDeltaChange}
                     />
@@ -211,9 +206,10 @@ export function AccountManager() {
                         new_bets.map((value, index) => (
                             <div key={index}>
                                 <h3>{`Владелец: ${value.owner}`}</h3>
-                                <p>{`Дельта: ${fromNano(value.delta_r)}`}</p>
+                                <p>{`Дельта: ${fromNano(Number(value.delta_r) / 1000)}`}</p>
                                 <p>{`ID ставки: ${value.seqno}`}</p>
                                 <p>{`Размер ставки: ${fromNano(value.bet_amount)}`}</p>
+                                <p>{`Отрицательное значение: ${value.is_negative}`}</p>
                             </div>
                         ))
                     ) : (
@@ -227,9 +223,10 @@ export function AccountManager() {
                         old_bets.map((value, index) => (
                             <div key={index}>
                                 <h3>{`Владелец: ${value.owner}`}</h3>
-                                <p>{`Дельта: ${fromNano(value.delta_r)}`}</p>
+                                <p>{`Дельта: ${fromNano(Number(value.delta_r) / 1000)}`}</p>
                                 <p>{`ID ставки: ${value.seqno}`}</p>
                                 <p>{`Размер ставки: ${fromNano(value.bet_amount)}`}</p>
+                                <p>{`Отрицательное значение: ${value.is_negative}`}</p>
                             </div>
                         ))
                     ) : (

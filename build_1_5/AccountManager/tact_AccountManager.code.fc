@@ -1,0 +1,379 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "tact_AccountManager.headers.fc";
+#include "tact_AccountManager.stdlib.fc";
+#include "tact_AccountManager.constants.fc";
+#include "tact_AccountManager.storage.fc";
+
+;;
+;; Contract AccountManager functions
+;;
+
+(slice, slice, int, int, int, int, int, int, int, int, int) $AccountManager$_contract_init(slice $owner) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = (null(), null(), null(), null(), null(), null(), null(), null(), null(), null(), null());
+    $self'owner = $owner;
+    $self'minter = my_address();
+    $self'odd_flag = true;
+    $self'median_delta_r = 0;
+    $self'first_time_flag = true;
+    $self'sum_delta_r = 0;
+    $self'current_index = 0;
+    $self'old_bet_counter = 0;
+    $self'new_bet_counter = 0;
+    $self'old_block_course = 0;
+    $self'new_block_course = 0;
+    return ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag);
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), slice) $AccountManager$_fun_TonCheckBookAddress((slice, slice, int, int, int, int, int, int, int, int, int) $self, slice $owner) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    var ($TonCheckInit'code, $TonCheckInit'data) = $TONCheckBook$_init_child(__tact_context_sys, my_address(), $owner);
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $global_contractAddress(($TonCheckInit'code, $TonCheckInit'data)));
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), slice) $AccountManager$_fun_get_wallet_address((slice, slice, int, int, int, int, int, int, int, int, int) $self, slice $owner) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    var ($winit'code, $winit'data) = $JettonDefaultWallet$_init_child(__tact_context_sys, $self'minter, $owner);
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $global_contractAddress(($winit'code, $winit'data)));
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), slice) $AccountManager$_fun_JettonWalletAddress((slice, slice, int, int, int, int, int, int, int, int, int) $self, slice $owner) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)~$AccountManager$_fun_get_wallet_address($owner));
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), slice) $AccountManager$_fun_minterAddress((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $self'minter);
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), slice) $AccountManager$_fun_myAddress((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), my_address());
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), int) $AccountManager$_fun_MaxBetIdInApplyedBlock((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $self'old_bet_counter);
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), int) $AccountManager$_fun_MaxBetIdInCurrentBlock((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $self'new_bet_counter);
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), slice) $AccountManager$_fun_BetAddressBySeqnoInApplyedBlock((slice, slice, int, int, int, int, int, int, int, int, int) $self, int $seqno) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    var ($init'code, $init'data) = $Bet$_init_child(__tact_context_sys, my_address(), $seqno, (~ $self'odd_flag));
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $global_contractAddress(($init'code, $init'data)));
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), slice) $AccountManager$_fun_BetAddressBySeqnoInCurrentBlock((slice, slice, int, int, int, int, int, int, int, int, int) $self, int $seqno) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    var ($init'code, $init'data) = $Bet$_init_child(__tact_context_sys, my_address(), $seqno, $self'odd_flag);
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $global_contractAddress(($init'code, $init'data)));
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), int) $AccountManager$_fun_CurrentBlockOddFlag((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $self'odd_flag);
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), int) $AccountManager$_fun_Balance((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), __tact_my_balance());
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), int) $AccountManager$_fun_OldBlockCourse((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $self'old_block_course);
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), int) $AccountManager$_fun_NewBlockCourse((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $self'new_block_course);
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), ()) $AccountManager$_fun_requireOwner((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    throw_unless(132, ( __tact_slice_eq_bits($self'owner, __tact_context_get_sender()) ));
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), slice) $AccountManager$_fun_owner((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), $self'owner);
+}
+
+;;
+;; Receivers of a Contract AccountManager
+;;
+
+(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) %$AccountManager$_internal_empty((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_DeployOk((slice, slice, int, int, int, int, int, int, int, int, int) $self, (int) $msg) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    var ($msg'queryId) = $msg;
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_InitMinter((slice, slice, int, int, int, int, int, int, int, int, int) $self, (cell) $msg) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    var ($msg'content) = $msg;
+    ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)~$AccountManager$_fun_requireOwner();
+    var ($minter_init'code, $minter_init'data) = $SampleJetton$_init_child(__tact_context_sys, my_address(), $msg'content);
+    $self'minter = $global_contractAddress(($minter_init'code, $minter_init'data));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_code_data_body($self'minter, 100000000, 2, true, $minter_init'code, $minter_init'data, $Deploy$_store_cell($Deploy$_constructor_queryId(0))));
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_IncrementCurrentBlockCount((slice, slice, int, int, int, int, int, int, int, int, int) $self, (int, int) $msg) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    var ($msg'seqno, $msg'odd_flag) = $msg;
+    throw_unless(17990, ( __tact_slice_eq_bits($global_contractAddress($Bet$_init_child(__tact_context_sys, my_address(), $msg'seqno, $msg'odd_flag)), __tact_context_get_sender()) ));
+    throw_unless(19255, ($self'odd_flag == $msg'odd_flag));
+    throw_unless(37845, ($self'new_bet_counter == ($msg'seqno - 1)));
+    $self'new_bet_counter = ($self'new_bet_counter + 1);
+    $global_send($SendParameters$_constructor_to_value_mode_bounce(__tact_context_get_sender(), 0, (64 + 2), true));
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_Mint((slice, slice, int, int, int, int, int, int, int, int, int) $self, (int, slice) $msg) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    var ($msg'amount, $msg'to) = $msg;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'minter, 0, (64 + 2), true, $Mint$_store_cell($Mint$_constructor_amount_to($msg'amount, $msg'to))));
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_InternalBetWinMessage((slice, slice, int, int, int, int, int, int, int, int, int) $self, (int, slice) $msg) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    var ($msg'amount, $msg'owner_ton_wallet) = $msg;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'minter, 50000000, (64 + 2), true, $Mint$_store_cell($Mint$_constructor_amount_to($msg'amount, $msg'owner_ton_wallet))));
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_CreateNewBlock((slice, slice, int, int, int, int, int, int, int, int, int) $self, (int) $msg) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    var ($msg'course) = $msg;
+    $self'odd_flag = (~ $self'odd_flag);
+    $self'old_bet_counter = $self'new_bet_counter;
+    $self'new_bet_counter = 0;
+    $self'old_block_course = $self'new_block_course;
+    $self'new_block_course = $msg'course;
+    ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)~$AccountManager$_fun_reply(__gen_cell_comment_3f0f6c61ba3a5513545d759283c652ec6adf55d16840786c8b9fa104e9e69c0a());
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_Deploy((slice, slice, int, int, int, int, int, int, int, int, int) $self, (int) $deploy) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)~$AccountManager$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+;;
+;; Get methods of a Contract AccountManager
+;;
+
+_ %TonCheckBookAddress(slice $$owner) method_id(91365) {
+    slice $owner = __tact_verify_address($$owner);
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_TonCheckBookAddress($owner);
+    return res;
+}
+
+_ %JettonWalletAddress(slice $$owner) method_id(125619) {
+    slice $owner = __tact_verify_address($$owner);
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_JettonWalletAddress($owner);
+    return res;
+}
+
+_ %minterAddress() method_id(100517) {
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_minterAddress();
+    return res;
+}
+
+_ %myAddress() method_id(77701) {
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_myAddress();
+    return res;
+}
+
+_ %MaxBetIdInApplyedBlock() method_id(126629) {
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_MaxBetIdInApplyedBlock();
+    return res;
+}
+
+_ %MaxBetIdInCurrentBlock() method_id(123626) {
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_MaxBetIdInCurrentBlock();
+    return res;
+}
+
+_ %BetAddressBySeqnoInApplyedBlock(int $$seqno) method_id(115452) {
+    int $seqno = $$seqno;
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_BetAddressBySeqnoInApplyedBlock($seqno);
+    return res;
+}
+
+_ %BetAddressBySeqnoInCurrentBlock(int $$seqno) method_id(118451) {
+    int $seqno = $$seqno;
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_BetAddressBySeqnoInCurrentBlock($seqno);
+    return res;
+}
+
+_ %CurrentBlockOddFlag() method_id(91488) {
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_CurrentBlockOddFlag();
+    return res;
+}
+
+_ %Balance() method_id(129078) {
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_Balance();
+    return res;
+}
+
+_ %OldBlockCourse() method_id(70571) {
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_OldBlockCourse();
+    return res;
+}
+
+_ %NewBlockCourse() method_id(70716) {
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_NewBlockCourse();
+    return res;
+}
+
+_ %owner() method_id(83229) {
+    var self = $AccountManager$_contract_load();
+    var res = self~$AccountManager$_fun_owner();
+    return res;
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128,
+        "org.ton.ownable"H >> 128
+    );
+}
+
+_ get_abi_ipfs() method_id {
+    return "ipfs://QmcSBMq7gDcvt9zTiKP5YYvLW3bEijEVuCDdWmFMuHt5k9";
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract AccountManager
+;;
+
+((slice, slice, int, int, int, int, int, int, int, int, int), int) $AccountManager$_contract_router_internal((slice, slice, int, int, int, int, int, int, int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        self~%$AccountManager$_internal_empty();
+        return (self, true);
+    }
+    
+    ;; Receive DeployOk message
+    if (op == 2952335191) {
+        var msg = in_msg~$DeployOk$_load();
+        self~$AccountManager$_internal_binary_DeployOk(msg);
+        return (self, true);
+    }
+    
+    ;; Receive InitMinter message
+    if (op == 3972604618) {
+        var msg = in_msg~$InitMinter$_load();
+        self~$AccountManager$_internal_binary_InitMinter(msg);
+        return (self, true);
+    }
+    
+    ;; Receive IncrementCurrentBlockCount message
+    if (op == 317473114) {
+        var msg = in_msg~$IncrementCurrentBlockCount$_load();
+        self~$AccountManager$_internal_binary_IncrementCurrentBlockCount(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Mint message
+    if (op == 1519427335) {
+        var msg = in_msg~$Mint$_load();
+        self~$AccountManager$_internal_binary_Mint(msg);
+        return (self, true);
+    }
+    
+    ;; Receive InternalBetWinMessage message
+    if (op == 3735498609) {
+        var msg = in_msg~$InternalBetWinMessage$_load();
+        self~$AccountManager$_internal_binary_InternalBetWinMessage(msg);
+        return (self, true);
+    }
+    
+    ;; Receive CreateNewBlock message
+    if (op == 4244186966) {
+        var msg = in_msg~$CreateNewBlock$_load();
+        self~$AccountManager$_internal_binary_CreateNewBlock(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$AccountManager$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $AccountManager$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$AccountManager$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $AccountManager$_contract_store(self);
+}

@@ -38,7 +38,7 @@ PROGRAM{
   DECLPROC $TONCheckBook$_fun_owner
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body_data_code
-  DECLPROC $SetBetInfo$_constructor_owner_ton_check_book_delta_r_balance
+  DECLPROC $SetBetInfo$_constructor_owner_ton_check_book_delta_r_balance_is_negative
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC %$TONCheckBook$_internal_empty
@@ -174,7 +174,7 @@ PROGRAM{
   $ApplyBetMessage$_load PROCREF:<{
     32 LDU
     SWAP
-    3741955996 PUSHINT
+    4260982606 PUSHINT
     EQUAL
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
@@ -188,28 +188,30 @@ PROGRAM{
     CTOS
     256 LDU
     1 LDI
+    1 LDI
     DROP
-    s2 s6 XCHG
-    s2 s5 XCHG
-    s2 s4 XCHG
-    s2 s3 XCHG
+    s3 s7 XCHG
+    s3 s6 XCHG
+    s3 s5 XCHG
+    s3 s4 XCHG
   }>
   $SetBetInfo$_store PROCINLINE:<{
-    583420203 PUSHINT
-    s0 s5 XCHG2
+    4279425714 PUSHINT
+    s0 s6 XCHG2
     32 STU
-    s0 s3 XCHG2
+    s0 s4 XCHG2
     __tact_store_address INLINECALLDICT
-    SWAP
+    ROT
     __tact_store_address INLINECALLDICT
     SWAP
     STGRAMS
     SWAP
     STGRAMS
+    1 STI
   }>
   $SetBetInfo$_store_cell PROCINLINE:<{
     NEWC
-    4 -ROLL
+    5 -ROLL
     $SetBetInfo$_store INLINECALLDICT
     ENDC
   }>
@@ -482,7 +484,7 @@ PROGRAM{
     s3 s4 XCHG
     SWAP
   }>
-  $SetBetInfo$_constructor_owner_ton_check_book_delta_r_balance PROCINLINE:<{
+  $SetBetInfo$_constructor_owner_ton_check_book_delta_r_balance_is_negative PROCINLINE:<{
   }>
   $SendParameters$_constructor_to_value_mode_bounce PROCINLINE:<{
     3 -ROLL
@@ -519,34 +521,36 @@ PROGRAM{
   $TONCheckBook$_internal_binary_ApplyBetMessage PROCINLINE:<{
     61019 PUSHINT
     __tact_my_balance INLINECALLDICT
-    s5 PUSH
+    s6 PUSH
     30000000 PUSHINT
     ADD
     GREATER
     THROWANYIFNOT
     __tact_context_sys GETGLOB
-    s0 s3 XCHG
-    s6 s6 s6 XCHG3
+    s7 s3 s3 XCHG3
+    s0 s7 XCHG
     $Bet$_init_child INLINECALLDICT
     2DUP
     $global_contractAddress INLINECALLDICT
-    s3 PUSH
+    s4 PUSH
     30000000 PUSHINT
     ADD
     2 PUSHINT
     TRUE
     MYADDR
-    s3 s8 XCHG
-    s0 s9 s7 XCHG3
-    $SetBetInfo$_constructor_owner_ton_check_book_delta_r_balance INLINECALLDICT
+    s4 s9 XCHG
+    s7 s1 s3 XCHG3
+    s8 s10 XCHG2
+    $SetBetInfo$_constructor_owner_ton_check_book_delta_r_balance_is_negative INLINECALLDICT
     $SetBetInfo$_store_cell INLINECALLDICT
-    s0 s0 s6 XCHG3
-    s0 s3 XCHG
+    s5 s6 XCHG
+    s3 s4 XCHG
+    s0 s2 XCHG
     $SendParameters$_constructor_to_value_mode_bounce_body_data_code INLINECALLDICT
     $global_send INLINECALLDICT
     __tact_context_get_sender INLINECALLDICT
     0 PUSHINT
-    130 PUSHINT
+    66 PUSHINT
     TRUE
     $SendParameters$_constructor_to_value_mode_bounce INLINECALLDICT
     $global_send INLINECALLDICT
@@ -577,7 +581,7 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d57696b46716f47364275366632536e647a7953536479776737596869763157646a346a57475078455041776b} PUSHSLICE
+    x{697066733a2f2f516d6642444b6d4a6b6239526f673544436f68636e5a53543159523353344236596d645645316d72787756637338} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -641,12 +645,12 @@ PROGRAM{
       TRUE
     }>
     DUP
-    3741955996 PUSHINT
+    4260982606 PUSHINT
     EQUAL
     IFJMP:<{
       DROP
       $ApplyBetMessage$_load INLINECALLDICT
-      1 6 BLKDROP2
+      1 7 BLKDROP2
       $TONCheckBook$_internal_binary_ApplyBetMessage INLINECALLDICT
       TRUE
     }>

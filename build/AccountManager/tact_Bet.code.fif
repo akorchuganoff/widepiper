@@ -26,7 +26,7 @@ PROGRAM{
   DECLPROC $Bet$_contract_load
   DECLPROC $Bet$_contract_store
   DECLPROC $global_send
-  DECLPROC $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount
+  DECLPROC $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount_is_negative
   DECLPROC $Bet$_fun_BetData
   DECLPROC $Bet$_fun_Balance
   DECLPROC $Bet$_fun_Address
@@ -38,7 +38,7 @@ PROGRAM{
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
   DECLPROC $InternalBetWinMessage$_constructor_amount_owner_ton_wallet
   DECLPROC $SendParameters$_constructor_to_value_mode_bounce
-  DECLPROC $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount
+  DECLPROC $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount_is_negative
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC %$Bet$_internal_empty
   DECLPROC $Bet$_internal_binary_SetBetInfo
@@ -127,7 +127,7 @@ PROGRAM{
   $SetBetInfo$_load PROCINLINE:<{
     32 LDU
     SWAP
-    583420203 PUSHINT
+    4279425714 PUSHINT
     EQUAL
     129 THROWIFNOT
     __tact_load_address INLINECALLDICT
@@ -136,16 +136,18 @@ PROGRAM{
     SWAP
     LDGRAMS
     LDGRAMS
-    4 -ROLL
+    1 LDI
+    5 -ROLL
   }>
   $ProcessBetInfo$_store PROCREF:<{
-    3693861493 PUSHINT
-    s0 s7 XCHG2
+    1218227262 PUSHINT
+    s0 s8 XCHG2
     32 STU
-    s0 s5 XCHG2
+    s0 s6 XCHG2
     __tact_store_address INLINECALLDICT
-    s0 s3 XCHG2
+    s0 s4 XCHG2
     __tact_store_address INLINECALLDICT
+    s1 s2 XCHG
     256 STU
     1 STI
     SWAP
@@ -153,13 +155,15 @@ PROGRAM{
     NEWC
     ROT
     STGRAMS
+    s1 s2 XCHG
+    1 STI
     ENDC
     SWAP
     STREF
   }>
   $ProcessBetInfo$_store_cell PROCINLINE:<{
     NEWC
-    6 -ROLL
+    7 -ROLL
     $ProcessBetInfo$_store INLINECALLDICT
     ENDC
   }>
@@ -192,21 +196,22 @@ PROGRAM{
     ENDC
   }>
   $Bet$_store PROCINLINE:<{
-    s7 s6 XCHG2
+    s8 s7 XCHG2
     __tact_store_address INLINECALLDICT
-    s0 s4 XCHG2
+    s0 s5 XCHG2
     __tact_store_address INLINECALLDICT
-    ROT
+    s0 s3 XCHG2
     __tact_store_address INLINECALLDICT
     SWAP
     NEWC
     256 STU
     s1 s2 XCHG
     1 STI
+    ROT
+    STGRAMS
     s0 s3 XCHG2
     STGRAMS
-    SWAP
-    STGRAMS
+    1 STI
     ENDC
     SWAP
     STREF
@@ -225,10 +230,11 @@ PROGRAM{
     1 LDI
     LDGRAMS
     LDGRAMS
+    1 LDI
     DROP
-    s4 s7 XCHG
-    s4 s6 XCHG
-    s4 s5 XCHG
+    s5 s8 XCHG
+    s5 s7 XCHG
+    s5 s6 XCHG
   }>
   $StateInit$_not_null PROCINLINE:<{
     DUP
@@ -253,6 +259,7 @@ PROGRAM{
     s3 s6 XCHG
     4 2 REVERSE
     s2 s3 XCHG
+    FALSE
   }>
   $Bet$_contract_load PROCREF:<{
     c4 PUSH
@@ -264,7 +271,7 @@ PROGRAM{
     SWAP
     IFJMP:<{
       $Bet$_load INLINECALLDICT
-      1 7 BLKDROP2
+      1 8 BLKDROP2
     }>
     MYADDR
     11 PLDU
@@ -285,7 +292,7 @@ PROGRAM{
     TRUE
     SWAP
     1 STI
-    7 -ROLL
+    8 -ROLL
     $Bet$_store INLINECALLDICT
     ENDC
     c4 POP
@@ -392,13 +399,13 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount PROCINLINE:<{
+  $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount_is_negative PROCINLINE:<{
   }>
   $Bet$_fun_BetData PROCREF:<{
-    s6 s5 s4 PUSH3
-    s6 s5 s4 PUSH3
-    s6 PUSH
-    $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount INLINECALLDICT
+    s7 s6 s5 PUSH3
+    s7 s6 s5 PUSH3
+    s7 s6 PUSH2
+    $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount_is_negative INLINECALLDICT
   }>
   $Bet$_fun_Balance PROCREF:<{
     __tact_my_balance INLINECALLDICT
@@ -459,24 +466,25 @@ PROGRAM{
     PUSHNULL
     PUSHNULL
   }>
-  $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount PROCINLINE:<{
+  $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount_is_negative PROCINLINE:<{
   }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
   %$Bet$_internal_empty PROCINLINE:<{
   }>
   $Bet$_internal_binary_SetBetInfo PROCINLINE:<{
-    s4 POP
-    s4 POP
-    s6 POP
-    s6 POP
+    s5 POP
+    s5 POP
+    s5 POP
+    s7 POP
+    s7 POP
     0 PUSHINT
     TRUE
     66 PUSHINT
-    s6 s5 PUSH2
+    s7 s6 PUSH2
     $IncrementCurrentBlockCount$_constructor_seqno_odd_flag INLINECALLDICT
     $IncrementCurrentBlockCount$_store_cell INLINECALLDICT
-    s10 PUSH
+    s11 PUSH
     4 -ROLL
     $SendParameters$_constructor_to_value_bounce_mode_body INLINECALLDICT
     $global_send INLINECALLDICT
@@ -485,14 +493,14 @@ PROGRAM{
     50000000 PUSHINT
     2 PUSHINT
     TRUE
-    s3 s8 PUSH2
+    s4 s9 PUSH2
     $InternalBetWinMessage$_constructor_amount_owner_ton_wallet INLINECALLDICT
     $InternalBetWinMessage$_store_cell INLINECALLDICT
-    s10 PUSH
+    s11 PUSH
     4 -ROLL
     $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
     $global_send INLINECALLDICT
-    s4 PUSH
+    s5 PUSH
     0 PUSHINT
     130 PUSHINT
     TRUE
@@ -500,7 +508,7 @@ PROGRAM{
     $global_send INLINECALLDICT
   }>
   $Bet$_internal_text_531da2ca3f940d771348917c00879aeea3ceccbce2bda18fe3b8f6f93dbbd10e PROCINLINE:<{
-    s6 PUSH
+    s7 PUSH
     0 PUSHINT
     130 PUSHINT
     TRUE
@@ -512,9 +520,10 @@ PROGRAM{
     20000000 PUSHINT
     2 PUSHINT
     TRUE
-    s10 s9 s7 PUSH3
-    s9 s8 s7 PUSH3
-    $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount INLINECALLDICT
+    s11 s10 s8 PUSH3
+    s10 s9 s8 PUSH3
+    s10 PUSH
+    $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount_is_negative INLINECALLDICT
     $ProcessBetInfo$_store_cell INLINECALLDICT
     $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
     $global_send INLINECALLDICT
@@ -527,18 +536,18 @@ PROGRAM{
   %BetData PROC:<{
     $Bet$_contract_load INLINECALLDICT
     $Bet$_fun_BetData INLINECALLDICT
-    7 7 BLKDROP2
+    8 8 BLKDROP2
     $BetData$_to_external INLINECALLDICT
   }>
   %Balance PROC:<{
     $Bet$_contract_load INLINECALLDICT
     $Bet$_fun_Balance INLINECALLDICT
-    7 1 BLKDROP2
+    8 1 BLKDROP2
   }>
   %Address PROC:<{
     $Bet$_contract_load INLINECALLDICT
     $Bet$_fun_Address INLINECALLDICT
-    7 1 BLKDROP2
+    8 1 BLKDROP2
   }>
   supported_interfaces PROC:<{
     123515602279859691144772641439386770278 PUSHINT
@@ -547,7 +556,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d634e436b50586a555878635346696b74725869684561736353443346644d5a68643641697a7378345464444a} PUSHSLICE
+    x{697066733a2f2f516d56336e41696b50774b755071686163506d395531654a31365373364d58324a4553513343726b654855373833} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -584,12 +593,12 @@ PROGRAM{
       TRUE
     }>
     DUP
-    583420203 PUSHINT
+    4279425714 PUSHINT
     EQUAL
     IFJMP:<{
       DROP
       $SetBetInfo$_load INLINECALLDICT
-      1 4 BLKDROP2
+      1 5 BLKDROP2
       $Bet$_internal_binary_SetBetInfo INLINECALLDICT
       TRUE
     }>
@@ -655,7 +664,7 @@ PROGRAM{
     s0 s2 XCHG
     __tact_context_sender SETGLOB
     $Bet$_contract_load INLINECALLDICT
-    2 7 BLKSWAP
+    2 8 BLKSWAP
     $Bet$_contract_router_internal INLINECALLDICT
     130 THROWIFNOT
     $Bet$_contract_store INLINECALLDICT

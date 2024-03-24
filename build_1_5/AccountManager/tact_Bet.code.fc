@@ -1,0 +1,211 @@
+#pragma version =0.4.3;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "tact_Bet.headers.fc";
+#include "tact_Bet.stdlib.fc";
+#include "tact_Bet.storage.fc";
+
+;;
+;; Contract Bet functions
+;;
+
+(slice, slice, slice, int, int, int, int, int) $Bet$_contract_init(slice $accountManager, int $seqno, int $odd_flag) impure inline_ref {
+    var (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)) = (null(), null(), null(), null(), null(), null(), null(), null());
+    $self'accountManager = $accountManager;
+    $self'owner_ton_wallet = $accountManager;
+    $self'ton_check_book = $accountManager;
+    $self'seqno = $seqno;
+    $self'odd_flag = $odd_flag;
+    $self'delta_r = 0;
+    $self'balance = 0;
+    $self'is_negative = false;
+    return ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative);
+}
+
+((slice, slice, slice, int, int, int, int, int), (slice, slice, slice, int, int, int, int)) $Bet$_fun_BetData((slice, slice, slice, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)) = $self;
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance));
+}
+
+((slice, slice, slice, int, int, int, int, int), int) $Bet$_fun_Balance((slice, slice, slice, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)) = $self;
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), __tact_my_balance());
+}
+
+((slice, slice, slice, int, int, int, int, int), slice) $Bet$_fun_Address((slice, slice, slice, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)) = $self;
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), my_address());
+}
+
+;;
+;; Receivers of a Contract Bet
+;;
+
+(((slice, slice, slice, int, int, int, int, int)), ()) %$Bet$_internal_empty((slice, slice, slice, int, int, int, int, int) $self) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
+}
+
+(((slice, slice, slice, int, int, int, int, int)), ()) $Bet$_internal_binary_SetBetInfo((slice, slice, slice, int, int, int, int, int) $self, (slice, slice, int, int, int) $msg) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    var ($msg'owner, $msg'ton_check_book, $msg'delta_r, $msg'balance, $msg'is_negative) = $msg;
+    $self'owner_ton_wallet = $msg'owner;
+    $self'ton_check_book = $msg'ton_check_book;
+    $self'delta_r = $msg'delta_r;
+    $self'balance = $msg'balance;
+    $self'is_negative = $msg'is_negative;
+    $global_send($SendParameters$_constructor_to_value_bounce_mode_body($self'accountManager, 0, true, (64 + 2), $IncrementCurrentBlockCount$_store_cell($IncrementCurrentBlockCount$_constructor_seqno_odd_flag($self'seqno, $self'odd_flag))));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
+}
+
+((slice, slice, slice, int, int, int, int, int), ()) $Bet$_internal_text_2ccf498f7cdf408f062e296c6df7c08280dd78373665eb6b384833cc14c72872((slice, slice, slice, int, int, int, int, int) $self) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'accountManager, 50000000, 2, true, $InternalBetWinMessage$_store_cell($InternalBetWinMessage$_constructor_amount_owner_ton_wallet($self'balance, $self'owner_ton_wallet))));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce($self'ton_check_book, 0, (128 + 2), true));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
+}
+
+((slice, slice, slice, int, int, int, int, int), ()) $Bet$_internal_text_531da2ca3f940d771348917c00879aeea3ceccbce2bda18fe3b8f6f93dbbd10e((slice, slice, slice, int, int, int, int, int) $self) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce($self'accountManager, 0, (128 + 2), true));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
+}
+
+((slice, slice, slice, int, int, int, int, int), ()) $Bet$_internal_text_c39249676c5a951f71517ad784655fa95c2ae4ce2c73e53cadf0b47a4c3e3faa((slice, slice, slice, int, int, int, int, int) $self) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body(__tact_context_get_sender(), 20000000, 2, true, $ProcessBetInfo$_store_cell($ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance))));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
+}
+
+(((slice, slice, slice, int, int, int, int, int)), ()) $Bet$_internal_binary_Deploy((slice, slice, slice, int, int, int, int, int) $self, (int) $deploy) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)~$Bet$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
+}
+
+;;
+;; Get methods of a Contract Bet
+;;
+
+_ %BetData() method_id(99770) {
+    var self = $Bet$_contract_load();
+    var res = self~$Bet$_fun_BetData();
+    return $BetData$_to_external(res);
+}
+
+_ %Balance() method_id(129078) {
+    var self = $Bet$_contract_load();
+    var res = self~$Bet$_fun_Balance();
+    return res;
+}
+
+_ %Address() method_id(90262) {
+    var self = $Bet$_contract_load();
+    var res = self~$Bet$_fun_Address();
+    return res;
+}
+
+_ supported_interfaces() method_id {
+    return (
+        "org.ton.introspection.v0"H >> 128,
+        "org.ton.abi.ipfs.v0"H >> 128,
+        "org.ton.deploy.lazy.v0"H >> 128,
+        "org.ton.chain.workchain.v0"H >> 128
+    );
+}
+
+_ get_abi_ipfs() method_id {
+    return "ipfs://Qma2Zh8abJbLPPxMzyFmdPKkGnXb7h6k9Xjo1pyq5RJUFM";
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Bet
+;;
+
+((slice, slice, slice, int, int, int, int, int), int) $Bet$_contract_router_internal((slice, slice, slice, int, int, int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive empty message
+    if ((op == 0) & (slice_bits(in_msg) <= 32)) {
+        self~%$Bet$_internal_empty();
+        return (self, true);
+    }
+    
+    ;; Receive SetBetInfo message
+    if (op == 4279425714) {
+        var msg = in_msg~$SetBetInfo$_load();
+        self~$Bet$_internal_binary_SetBetInfo(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$Bet$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Win" message
+        if (text_op == 0x2ccf498f7cdf408f062e296c6df7c08280dd78373665eb6b384833cc14c72872) {
+            self~$Bet$_internal_text_2ccf498f7cdf408f062e296c6df7c08280dd78373665eb6b384833cc14c72872();
+            return (self, true);
+        }
+        
+        ;; Receive "Lose" message
+        if (text_op == 0x531da2ca3f940d771348917c00879aeea3ceccbce2bda18fe3b8f6f93dbbd10e) {
+            self~$Bet$_internal_text_531da2ca3f940d771348917c00879aeea3ceccbce2bda18fe3b8f6f93dbbd10e();
+            return (self, true);
+        }
+        
+        ;; Receive "GetBetInfo" message
+        if (text_op == 0xc39249676c5a951f71517ad784655fa95c2ae4ce2c73e53cadf0b47a4c3e3faa) {
+            self~$Bet$_internal_text_c39249676c5a951f71517ad784655fa95c2ae4ce2c73e53cadf0b47a4c3e3faa();
+            return (self, true);
+        }
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Bet$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Bet$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $Bet$_contract_store(self);
+}
