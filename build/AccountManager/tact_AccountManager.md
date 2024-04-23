@@ -1,9 +1,9 @@
 # TACT Compilation Report
 Contract: AccountManager
-BOC Size: 2732 bytes
+BOC Size: 2917 bytes
 
 # Types
-Total Types: 30
+Total Types: 32
 
 ## StateInit
 TLB: `_ code:^cell data:^cell = StateInit`
@@ -38,8 +38,52 @@ TLB: `change_owner_ok#327b2b4a queryId:uint64 newOwner:address = ChangeOwnerOk`
 Signature: `ChangeOwnerOk{queryId:uint64,newOwner:address}`
 
 ## Mint
-TLB: `mint#5a909f07 amount:int257 to:address = Mint`
-Signature: `Mint{amount:int257,to:address}`
+TLB: `mint#fc708bd2 amount:int257 receiver:address = Mint`
+Signature: `Mint{amount:int257,receiver:address}`
+
+## JettonData
+TLB: `_ totalSupply:int257 mintable:bool owner:address content:^cell walletCode:^cell = JettonData`
+Signature: `JettonData{totalSupply:int257,mintable:bool,owner:address,content:^cell,walletCode:^cell}`
+
+## JettonWalletData
+TLB: `_ balance:int257 owner:address master:address walletCode:^cell = JettonWalletData`
+Signature: `JettonWalletData{balance:int257,owner:address,master:address,walletCode:^cell}`
+
+## TokenTransfer
+TLB: `token_transfer#0f8a7ea5 queryId:uint64 amount:coins destination:address response_destination:address custom_payload:Maybe ^cell forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransfer`
+Signature: `TokenTransfer{queryId:uint64,amount:coins,destination:address,response_destination:address,custom_payload:Maybe ^cell,forward_ton_amount:coins,forward_payload:remainder<slice>}`
+
+## TokenTransferInternal
+TLB: `token_transfer_internal#178d4519 queryId:uint64 amount:coins from:address response_destination:address forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransferInternal`
+Signature: `TokenTransferInternal{queryId:uint64,amount:coins,from:address,response_destination:address,forward_ton_amount:coins,forward_payload:remainder<slice>}`
+
+## TokenNotification
+TLB: `token_notification#7362d09c queryId:uint64 amount:coins from:address forward_payload:remainder<slice> = TokenNotification`
+Signature: `TokenNotification{queryId:uint64,amount:coins,from:address,forward_payload:remainder<slice>}`
+
+## TokenBurn
+TLB: `token_burn#595f07bc queryId:uint64 amount:coins owner:address response_destination:address = TokenBurn`
+Signature: `TokenBurn{queryId:uint64,amount:coins,owner:address,response_destination:address}`
+
+## TokenBurnNotification
+TLB: `token_burn_notification#7bdd97de queryId:uint64 amount:coins owner:address response_destination:Maybe address = TokenBurnNotification`
+Signature: `TokenBurnNotification{queryId:uint64,amount:coins,owner:address,response_destination:Maybe address}`
+
+## TokenExcesses
+TLB: `token_excesses#d53276db queryId:uint64 = TokenExcesses`
+Signature: `TokenExcesses{queryId:uint64}`
+
+## TokenUpdateContent
+TLB: `token_update_content#af1ca26a content:^cell = TokenUpdateContent`
+Signature: `TokenUpdateContent{content:^cell}`
+
+## ProvideWalletAddress
+TLB: `provide_wallet_address#2c76b973 query_id:uint64 owner_address:address include_address:bool = ProvideWalletAddress`
+Signature: `ProvideWalletAddress{query_id:uint64,owner_address:address,include_address:bool}`
+
+## TakeWalletAddress
+TLB: `take_wallet_address#d1735400 query_id:uint64 wallet_address:address owner_address:Maybe ^cell = TakeWalletAddress`
+Signature: `TakeWalletAddress{query_id:uint64,wallet_address:address,owner_address:Maybe ^cell}`
 
 ## CreateNewBlock
 TLB: `create_new_block#fcf92756 course:coins = CreateNewBlock`
@@ -74,8 +118,8 @@ TLB: `balance#00ec6b43 balance:coins = Balance`
 Signature: `Balance{balance:coins}`
 
 ## InitMinter
-TLB: `init_minter#ecc922ca content:Maybe ^cell = InitMinter`
-Signature: `InitMinter{content:Maybe ^cell}`
+TLB: `init_minter#42505fac content:^cell is_minter_present:bool minter_address:Maybe address = InitMinter`
+Signature: `InitMinter{content:^cell,is_minter_present:bool,minter_address:Maybe address}`
 
 ## Withdraw
 TLB: `withdraw#0ba69751 amount:coins = Withdraw`
@@ -88,42 +132,6 @@ Signature: `IncrementCurrentBlockCount{seqno:uint256,odd_flag:bool}`
 ## ProcessOldBlock
 TLB: `process_old_block#bd7ce6d4 median_delta_r:coins course:coins = ProcessOldBlock`
 Signature: `ProcessOldBlock{median_delta_r:coins,course:coins}`
-
-## TokenTransfer
-TLB: `token_transfer#0f8a7ea5 queryId:uint64 amount:coins destination:address responseDestination:Maybe address customPayload:Maybe ^cell forwardTonAmount:coins forwardPayload:remainder<slice> = TokenTransfer`
-Signature: `TokenTransfer{queryId:uint64,amount:coins,destination:address,responseDestination:Maybe address,customPayload:Maybe ^cell,forwardTonAmount:coins,forwardPayload:remainder<slice>}`
-
-## TokenTransferInternal
-TLB: `token_transfer_internal#178d4519 queryId:uint64 amount:coins from:address responseAddress:Maybe address forwardTonAmount:coins forwardPayload:remainder<slice> = TokenTransferInternal`
-Signature: `TokenTransferInternal{queryId:uint64,amount:coins,from:address,responseAddress:Maybe address,forwardTonAmount:coins,forwardPayload:remainder<slice>}`
-
-## TokenNotification
-TLB: `token_notification#7362d09c queryId:uint64 amount:coins from:address forwardPayload:remainder<slice> = TokenNotification`
-Signature: `TokenNotification{queryId:uint64,amount:coins,from:address,forwardPayload:remainder<slice>}`
-
-## TokenBurn
-TLB: `token_burn#595f07bc queryId:uint64 amount:coins owner:address responseAddress:Maybe address = TokenBurn`
-Signature: `TokenBurn{queryId:uint64,amount:coins,owner:address,responseAddress:Maybe address}`
-
-## TokenBurnNotification
-TLB: `token_burn_notification#7bdd97de queryId:uint64 amount:coins owner:address responseAddress:Maybe address = TokenBurnNotification`
-Signature: `TokenBurnNotification{queryId:uint64,amount:coins,owner:address,responseAddress:Maybe address}`
-
-## TokenExcesses
-TLB: `token_excesses#d53276db queryId:uint64 = TokenExcesses`
-Signature: `TokenExcesses{queryId:uint64}`
-
-## TokenUpdateContent
-TLB: `token_update_content#0c087a9e content:Maybe ^cell = TokenUpdateContent`
-Signature: `TokenUpdateContent{content:Maybe ^cell}`
-
-## JettonData
-TLB: `_ totalSupply:int257 mintable:bool owner:address content:Maybe ^cell = JettonData`
-Signature: `JettonData{totalSupply:int257,mintable:bool,owner:address,content:Maybe ^cell}`
-
-## JettonWalletData
-TLB: `_ balance:int257 owner:address master:address = JettonWalletData`
-Signature: `JettonWalletData{balance:int257,owner:address,master:address}`
 
 # Get Methods
 Total Get Methods: 13
@@ -183,13 +191,16 @@ Argument: seqno
 135: Code of a contract was not found
 136: Invalid address
 137: Masterchain support is not enabled for this contract
+3734: Not Owner
+4159: Invalid value!!
 4429: Invalid sender
-13650: Invalid bounced message
 15518: Amount is too small
-16059: Invalid value
 17990: Only bet can increment
+18668: Can't Mint Anymore
 19255: Only current block
 37845: Invalid ID
+42708: Invalid sender!
+43422: Invalid value - Burn
 48121: Only Account Manager
 61019: Invalid Balance
 62972: Invalid balance

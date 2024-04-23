@@ -9,6 +9,9 @@ slice __tact_verify_address(slice address) inline;
 ;; __tact_load_address
 (slice, slice) __tact_load_address(slice cs) inline;
 
+;; __tact_load_address_opt
+(slice, slice) __tact_load_address_opt(slice cs) inline;
+
 ;; __tact_store_address
 builder __tact_store_address(builder b, slice address) inline;
 
@@ -60,6 +63,12 @@ cell $DeployOk$_store_cell((int) v) inline;
 ;; $DeployOk$_load
 (slice, ((int))) $DeployOk$_load(slice sc_0) inline;
 
+;; $ChangeOwner$_store
+builder $ChangeOwner$_store(builder build_0, (int, slice) v) inline;
+
+;; $ChangeOwner$_store_cell
+cell $ChangeOwner$_store_cell((int, slice) v) inline;
+
 ;; $Mint$_store
 builder $Mint$_store(builder build_0, (int, slice) v) inline;
 
@@ -76,7 +85,7 @@ cell $Mint$_store_cell((int, slice) v) inline;
 (slice, ((int, slice))) $InternalBetWinMessage$_load(slice sc_0) inline;
 
 ;; $InitMinter$_load
-(slice, ((cell))) $InitMinter$_load(slice sc_0) inline;
+(slice, ((cell, int, slice))) $InitMinter$_load(slice sc_0) inline;
 
 ;; $IncrementCurrentBlockCount$_load
 (slice, ((int, int))) $IncrementCurrentBlockCount$_load(slice sc_0) inline;
@@ -96,11 +105,11 @@ builder $Bet$init$_store(builder build_0, (slice, int, int) v) inline;
 ;; $SampleJetton$init$_store
 builder $SampleJetton$init$_store(builder build_0, (slice, cell) v) inline;
 
-;; $TONCheckBook$init$_store
-builder $TONCheckBook$init$_store(builder build_0, (slice, slice) v) inline;
-
 ;; $JettonDefaultWallet$init$_store
 builder $JettonDefaultWallet$init$_store(builder build_0, (slice, slice) v) inline;
+
+;; $TONCheckBook$init$_store
+builder $TONCheckBook$init$_store(builder build_0, (slice, slice) v) inline;
 
 ;; $AccountManager$init$_load
 (slice, ((slice))) $AccountManager$init$_load(slice sc_0) inline;
@@ -129,11 +138,11 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $SampleJetton$_init_child
 (cell, cell) $SampleJetton$_init_child(cell sys', slice $owner, cell $content) inline_ref;
 
-;; $TONCheckBook$_init_child
-(cell, cell) $TONCheckBook$_init_child(cell sys', slice $accountManager, slice $owner) inline_ref;
-
 ;; $JettonDefaultWallet$_init_child
 (cell, cell) $JettonDefaultWallet$_init_child(cell sys', slice $master, slice $owner) inline_ref;
+
+;; $TONCheckBook$_init_child
+(cell, cell) $TONCheckBook$_init_child(cell sys', slice $accountManager, slice $owner) inline_ref;
 
 ;; $AccountManager$_fun_TonCheckBookAddress
 ((slice, slice, int, int, int, int, int, int, int, int, int), slice) $AccountManager$_fun_TonCheckBookAddress((slice, slice, int, int, int, int, int, int, int, int, int) $self, slice $owner) impure inline_ref;
@@ -201,8 +210,11 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $SendParameters$_constructor_to_value_mode_bounce_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline;
 
-;; $Mint$_constructor_amount_to
-((int, slice)) $Mint$_constructor_amount_to(int amount, slice to) inline;
+;; $Mint$_constructor_amount_receiver
+((int, slice)) $Mint$_constructor_amount_receiver(int amount, slice receiver) inline;
+
+;; $ChangeOwner$_constructor_queryId_newOwner
+((int, slice)) $ChangeOwner$_constructor_queryId_newOwner(int queryId, slice newOwner) inline;
 
 ;; $DeployOk$_constructor_queryId
 ((int)) $DeployOk$_constructor_queryId(int queryId) inline;

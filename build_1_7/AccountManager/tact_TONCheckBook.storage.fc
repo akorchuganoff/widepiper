@@ -1,0 +1,195 @@
+;;
+;; Type: StateInit
+;; TLB: _ code:^cell data:^cell = StateInit
+;;
+
+((cell, cell)) $StateInit$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (cell vvv'code, cell vvv'data) = __tact_tuple_destroy_2(v);
+    return (vvv'code, vvv'data);
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body_data_code(slice to, int value, int mode, int bounce, cell body, cell data, cell code) inline {
+    return (bounce, to, value, mode, body, code, data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce(slice to, int value, int mode, int bounce) inline {
+    return (bounce, to, value, mode, null(), null(), null());
+}
+
+;;
+;; Type: Deploy
+;; Header: 0x946a98b6
+;; TLB: deploy#946a98b6 queryId:uint64 = Deploy
+;;
+
+(slice, ((int))) $Deploy$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2490013878);
+    var v'queryId = sc_0~load_uint(64);
+    return (sc_0, (v'queryId));
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v) inline {
+    return $DeployOk$_store(begin_cell(), v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int queryId) inline {
+    return (queryId);
+}
+
+;;
+;; Type: ApplyBetMessage
+;; Header: 0xfdf96f4e
+;; TLB: apply_bet_message#fdf96f4e account_manager:address owner:address bet_amount:coins delta_r:coins seqno:uint256 odd_flag:bool is_negative:bool = ApplyBetMessage
+;;
+
+(slice, ((slice, slice, int, int, int, int, int))) $ApplyBetMessage$_load(slice sc_0) inline_ref {
+    throw_unless(129, sc_0~load_uint(32) == 4260982606);
+    var v'account_manager = sc_0~__tact_load_address();
+    var v'owner = sc_0~__tact_load_address();
+    var v'bet_amount = sc_0~load_coins();
+    var v'delta_r = sc_0~load_coins();
+    slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'seqno = sc_1~load_uint(256);
+    var v'odd_flag = sc_1~load_int(1);
+    var v'is_negative = sc_1~load_int(1);
+    return (sc_0, (v'account_manager, v'owner, v'bet_amount, v'delta_r, v'seqno, v'odd_flag, v'is_negative));
+}
+
+;;
+;; Type: SetBetInfo
+;; Header: 0xff12dab2
+;; TLB: set_bet_info#ff12dab2 owner:address ton_check_book:address delta_r:coins balance:coins is_negative:bool = SetBetInfo
+;;
+
+builder $SetBetInfo$_store(builder build_0, (slice, slice, int, int, int) v) inline {
+    var (v'owner, v'ton_check_book, v'delta_r, v'balance, v'is_negative) = v;
+    build_0 = store_uint(build_0, 4279425714, 32);
+    build_0 = __tact_store_address(build_0, v'owner);
+    build_0 = __tact_store_address(build_0, v'ton_check_book);
+    build_0 = build_0.store_coins(v'delta_r);
+    build_0 = build_0.store_coins(v'balance);
+    build_0 = build_0.store_int(v'is_negative, 1);
+    return build_0;
+}
+
+cell $SetBetInfo$_store_cell((slice, slice, int, int, int) v) inline {
+    return $SetBetInfo$_store(begin_cell(), v).end_cell();
+}
+
+((slice, slice, int, int, int)) $SetBetInfo$_constructor_owner_ton_check_book_delta_r_balance_is_negative(slice owner, slice ton_check_book, int delta_r, int balance, int is_negative) inline {
+    return (owner, ton_check_book, delta_r, balance, is_negative);
+}
+
+;;
+;; Type: Withdraw
+;; Header: 0x0ba69751
+;; TLB: withdraw#0ba69751 amount:coins = Withdraw
+;;
+
+(slice, ((int))) $Withdraw$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 195467089);
+    var v'amount = sc_0~load_coins();
+    return (sc_0, (v'amount));
+}
+
+;;
+;; Type: Bet
+;;
+
+builder $Bet$init$_store(builder build_0, (slice, int, int) v) inline {
+    var (v'accountManager, v'seqno, v'odd_flag) = v;
+    build_0 = __tact_store_address(build_0, v'accountManager);
+    build_0 = build_0.store_int(v'seqno, 257);
+    build_0 = build_0.store_int(v'odd_flag, 1);
+    return build_0;
+}
+
+(cell, cell) $Bet$_init_child(cell sys', slice $accountManager, int $seqno, int $odd_flag) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: Bet
+    cell mine = __tact_dict_get_code(source, 47361);
+    contracts = __tact_dict_set_code(contracts, 47361, mine);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $Bet$init$_store(b, ($accountManager, $seqno, $odd_flag));
+    return (mine, b.end_cell());
+}
+
+;;
+;; Type: TONCheckBook
+;;
+
+builder $TONCheckBook$_store(builder build_0, (slice, slice) v) inline {
+    var (v'accountManager, v'owner) = v;
+    build_0 = __tact_store_address(build_0, v'accountManager);
+    build_0 = __tact_store_address(build_0, v'owner);
+    return build_0;
+}
+
+(slice, ((slice, slice))) $TONCheckBook$_load(slice sc_0) inline {
+    var v'accountManager = sc_0~__tact_load_address();
+    var v'owner = sc_0~__tact_load_address();
+    return (sc_0, (v'accountManager, v'owner));
+}
+
+(slice, ((slice, slice))) $TONCheckBook$init$_load(slice sc_0) inline {
+    var v'accountManager = sc_0~__tact_load_address();
+    var v'owner = sc_0~__tact_load_address();
+    return (sc_0, (v'accountManager, v'owner));
+}
+
+(slice, slice) $TONCheckBook$_contract_load() impure inline_ref {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$TONCheckBook$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        (slice accountManager, slice owner) = $sc~$TONCheckBook$init$_load();
+        $sc.end_parse();
+        return $TONCheckBook$_contract_init(accountManager, owner);
+    }
+}
+
+() $TONCheckBook$_contract_store((slice, slice) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $TONCheckBook$_store(b, v);
+    set_data(b.end_cell());
+}

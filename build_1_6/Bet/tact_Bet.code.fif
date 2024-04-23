@@ -1,0 +1,845 @@
+PROGRAM{
+  DECLPROC __tact_verify_address
+  DECLPROC __tact_load_address
+  DECLPROC __tact_store_address
+  DECLPROC __tact_create_address
+  DECLPROC __tact_compute_contract_address
+  DECLPROC __tact_my_balance
+  DECLPROC __tact_not_null
+  DECLPROC __tact_context_get
+  DECLPROC __tact_context_get_sender
+  DECLPROC __tact_store_bool
+  DECLPROC __tact_slice_eq_bits
+  DECLPROC __tact_dict_set_code
+  DECLPROC __tact_dict_get_code
+  DECLPROC $Deploy$_load
+  DECLPROC $DeployOk$_store
+  DECLPROC $DeployOk$_store_cell
+  DECLPROC $Win$_load
+  DECLPROC $Lose$_load
+  DECLPROC $ApplyBetMessage$_store
+  DECLPROC $ApplyBetMessage$_store_cell
+  DECLPROC $SetBetInfo$_load
+  DECLPROC $GetBetInfo$_load
+  DECLPROC $ProcessBetInfo$_store
+  DECLPROC $ProcessBetInfo$_store_cell
+  DECLPROC $BetWinMessage$_store
+  DECLPROC $BetWinMessage$_store_cell
+  DECLPROC $Bet$_store
+  DECLPROC $Bet$_load
+  DECLPROC $StateInit$_not_null
+  DECLPROC $BetData$_to_external
+  DECLPROC $TONCheckBook$init$_store
+  DECLPROC $Bet$init$_load
+  DECLPROC $Bet$_contract_init
+  DECLPROC $Bet$_contract_load
+  DECLPROC $Bet$_contract_store
+  DECLPROC $global_contractAddress
+  DECLPROC $global_send
+  DECLPROC $TONCheckBook$_init_child
+  DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+  DECLPROC $ApplyBetMessage$_constructor_owner_rounds_count_delta_r_bet_ammount_prev_bet_seqno_prev_bet_odd_flag
+  DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
+  DECLPROC $Bet$_fun_sendBetContinue
+  DECLPROC $BetData$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount
+  DECLPROC $Bet$_fun_BetData
+  DECLPROC $Bet$_fun_Balance
+  DECLPROC $Bet$_fun_Address
+  DECLPROC $Bet$_fun_require_account_manager
+  DECLPROC $Bet$_fun_forward
+  DECLPROC $Bet$_fun_reply
+  DECLPROC $Bet$_fun_notify
+  DECLPROC $BetWinMessage$_constructor_amount_owner_ton_wallet
+  DECLPROC $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount
+  DECLPROC $DeployOk$_constructor_queryId
+  DECLPROC %$Bet$_internal_empty
+  DECLPROC $Bet$_internal_binary_SetBetInfo
+  DECLPROC $Bet$_internal_binary_Win
+  DECLPROC $Bet$_internal_binary_Lose
+  DECLPROC $Bet$_internal_binary_GetBetInfo
+  DECLPROC $Bet$_internal_text_c39249676c5a951f71517ad784655fa95c2ae4ce2c73e53cadf0b47a4c3e3faa
+  DECLPROC $Bet$_internal_binary_Deploy
+  99770 DECLMETHOD %BetData
+  129078 DECLMETHOD %Balance
+  90262 DECLMETHOD %Address
+  113617 DECLMETHOD supported_interfaces
+  121275 DECLMETHOD get_abi_ipfs
+  115390 DECLMETHOD lazy_deployment_completed
+  DECLPROC $Bet$_contract_router_internal
+  DECLPROC recv_internal
+  DECLGLOBVAR __tact_context
+  DECLGLOBVAR __tact_context_sender
+  DECLGLOBVAR __tact_context_sys
+  DECLGLOBVAR __tact_randomized
+  __tact_verify_address PROCINLINE:<{
+    DUP
+    SBITS
+    267 PUSHINT
+    EQUAL
+    136 THROWIFNOT
+    DUP
+    11 PLDU
+    DUP
+    1279 PUSHINT
+    EQUAL
+    137 THROWIF
+    10 PUSHPOW2
+    EQUAL
+    136 THROWIFNOT
+  }>
+  __tact_load_address PROCINLINE:<{
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+  }>
+  __tact_store_address PROCINLINE:<{
+    __tact_verify_address INLINECALLDICT
+    STSLICER
+  }>
+  __tact_create_address PROCINLINE:<{
+    NEWC
+    2 PUSHINT
+    SWAP
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    8 STI
+    256 STU
+    ENDC
+    CTOS
+    __tact_verify_address INLINECALLDICT
+  }>
+  __tact_compute_contract_address PROCINLINE:<{
+    NEWC
+    0 PUSHINT
+    SWAP
+    2 STU
+    3 PUSHINT
+    SWAP
+    2 STU
+    0 PUSHINT
+    SWAP
+    1 STU
+    s1 s2 XCHG
+    STREF
+    STREF
+    ENDC
+    HASHCU
+    __tact_create_address INLINECALLDICT
+  }>
+  __tact_my_balance PROCINLINE:<{
+    BALANCE
+    FIRST
+  }>
+  __tact_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+  }>
+  __tact_context_get PROCINLINE:<{
+    __tact_context GETGLOB
+    4 UNTUPLE
+  }>
+  __tact_context_get_sender PROCINLINE:<{
+    __tact_context_sender GETGLOB
+  }>
+  __tact_store_bool PROCINLINE:<{
+    SWAP
+    1 STI
+  }>
+  __tact_slice_eq_bits PROCINLINE:<{
+    SDEQ
+  }>
+  __tact_dict_set_code PROCINLINE:<{
+    s0 s2 XCHG
+    16 PUSHINT
+    DICTUSETREF
+  }>
+  __tact_dict_get_code PROCINLINE:<{
+    SWAP
+    16 PUSHINT
+    DICTUGETREF
+    NULLSWAPIFNOT
+    135 THROWIFNOT
+  }>
+  $Deploy$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    2490013878 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    SWAP
+  }>
+  $DeployOk$_store PROCINLINE:<{
+    2952335191 PUSHINT
+    ROT
+    32 STU
+    64 STU
+  }>
+  $DeployOk$_store_cell PROCINLINE:<{
+    NEWC
+    SWAP
+    $DeployOk$_store INLINECALLDICT
+    ENDC
+  }>
+  $Win$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    174790457 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    PUSHNULL
+  }>
+  $Lose$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    866806741 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    PUSHNULL
+  }>
+  $ApplyBetMessage$_store PROCREF:<{
+    2142873043 PUSHINT
+    s0 s7 XCHG2
+    32 STU
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s1 s3 XCHG
+    16 STU
+    SWAP
+    STGRAMS
+    SWAP
+    STGRAMS
+    256 STU
+    1 STI
+  }>
+  $ApplyBetMessage$_store_cell PROCINLINE:<{
+    NEWC
+    6 -ROLL
+    $ApplyBetMessage$_store INLINECALLDICT
+    ENDC
+  }>
+  $SetBetInfo$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    942208451 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+    SWAP
+    16 LDU
+    LDGRAMS
+    3 -ROLL
+  }>
+  $GetBetInfo$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    2443301346 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    PUSHNULL
+  }>
+  $ProcessBetInfo$_store PROCREF:<{
+    1208154667 PUSHINT
+    s0 s8 XCHG2
+    32 STU
+    s0 s6 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s4 XCHG2
+    __tact_store_address INLINECALLDICT
+    s1 s2 XCHG
+    256 STU
+    1 STI
+    16 STU
+    SWAP
+    STGRAMS
+    NEWC
+    ROT
+    STGRAMS
+    ENDC
+    SWAP
+    STREF
+  }>
+  $ProcessBetInfo$_store_cell PROCINLINE:<{
+    NEWC
+    7 -ROLL
+    $ProcessBetInfo$_store INLINECALLDICT
+    ENDC
+  }>
+  $BetWinMessage$_store PROCINLINE:<{
+    1976004186 PUSHINT
+    s0 s3 XCHG2
+    32 STU
+    SWAP
+    STGRAMS
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  $BetWinMessage$_store_cell PROCINLINE:<{
+    NEWC
+    -ROT
+    $BetWinMessage$_store INLINECALLDICT
+    ENDC
+  }>
+  $Bet$_store PROCINLINE:<{
+    s7 s6 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s4 XCHG2
+    __tact_store_address INLINECALLDICT
+    s1 s2 XCHG
+    256 STU
+    1 STI
+    16 STU
+    ROT
+    STGRAMS
+    NEWC
+    ROT
+    STGRAMS
+    ENDC
+    SWAP
+    STREF
+  }>
+  $Bet$_load PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    __tact_load_address INLINECALLDICT
+    SWAP
+    256 LDU
+    1 LDI
+    16 LDU
+    LDGRAMS
+    LDREF
+    SWAP
+    CTOS
+    LDGRAMS
+    DROP
+    s1 s7 XCHG
+    s1 s6 XCHG
+    s1 s5 XCHG
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+  }>
+  $StateInit$_not_null PROCINLINE:<{
+    DUP
+    ISNULL
+    128 THROWIF
+    2 UNTUPLE
+  }>
+  $BetData$_to_external PROCINLINE:<{
+  }>
+  $TONCheckBook$init$_store PROCINLINE:<{
+    -ROT
+    __tact_store_address INLINECALLDICT
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  $Bet$init$_load PROCINLINE:<{
+    __tact_load_address INLINECALLDICT
+    SWAP
+    257 PUSHINT
+    LDIX
+    1 LDI
+    3 -ROLL
+  }>
+  $Bet$_contract_init PROCREF:<{
+    s2 PUSH
+    0 PUSHINT
+    s0 s0 PUSH2
+    s3 s6 XCHG
+    s3 s5 XCHG
+    s3 s4 XCHG
+  }>
+  $Bet$_contract_load PROCREF:<{
+    c4 PUSH
+    CTOS
+    LDREF
+    SWAP
+    __tact_context_sys SETGLOB
+    1 LDI
+    SWAP
+    IFJMP:<{
+      $Bet$_load INLINECALLDICT
+      1 7 BLKDROP2
+    }>
+    MYADDR
+    11 PLDU
+    10 PUSHPOW2
+    EQUAL
+    137 THROWIFNOT
+    $Bet$init$_load INLINECALLDICT
+    s0 s3 XCHG
+    ENDS
+    ROT
+    $Bet$_contract_init INLINECALLDICT
+  }>
+  $Bet$_contract_store PROCINLINE:<{
+    NEWC
+    __tact_context_sys GETGLOB
+    SWAP
+    STREF
+    TRUE
+    SWAP
+    1 STI
+    7 -ROLL
+    $Bet$_store INLINECALLDICT
+    ENDC
+    c4 POP
+  }>
+  $global_contractAddress PROCINLINE:<{
+    0 PUSHINT
+    -ROT
+    __tact_compute_contract_address INLINECALLDICT
+  }>
+  $global_send PROCREF:<{
+    NEWC
+    1 PUSHINT
+    SWAP
+    2 STI
+    s0 s7 XCHG2
+    __tact_store_bool INLINECALLDICT
+    0 PUSHINT
+    SWAP
+    3 STI
+    s0 s5 XCHG2
+    __tact_store_address INLINECALLDICT
+    s0 s3 XCHG2
+    STGRAMS
+    0 PUSHINT
+    SWAP
+    105 STI
+    s3 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+    }>ELSE<{
+      s4 PUSH
+      ISNULL
+      NOT
+    }>
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      NEWC
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      s4 PUSH
+      ISNULL
+      NOT
+      IF:<{
+        TRUE
+        __tact_store_bool INLINECALLDICT
+        s0 s4 XCHG
+        __tact_not_null INLINECALLDICT
+        s0 s4 XCHG2
+        STREF
+      }>ELSE<{
+        s4 POP
+        s0 s3 XCHG
+        FALSE
+        __tact_store_bool INLINECALLDICT
+      }>
+      FALSE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      s0 s2 XCHG
+      ENDC
+      ROT
+      STREF
+    }>ELSE<{
+      s3 POP
+      s3 POP
+      SWAP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    OVER
+    ISNULL
+    NOT
+    IF:<{
+      TRUE
+      __tact_store_bool INLINECALLDICT
+      SWAP
+      __tact_not_null INLINECALLDICT
+      SWAP
+      STREF
+    }>ELSE<{
+      NIP
+      FALSE
+      __tact_store_bool INLINECALLDICT
+    }>
+    ENDC
+    SWAP
+    SENDRAWMSG
+  }>
+  $TONCheckBook$_init_child PROCREF:<{
+    s0 s2 XCHG
+    CTOS
+    LDDICT
+    DROP
+    NEWDICT
+    SWAP
+    56866 PUSHINT
+    __tact_dict_get_code INLINECALLDICT
+    SWAP
+    56866 PUSHINT
+    s2 PUSH
+    __tact_dict_set_code INLINECALLDICT
+    NEWC
+    SWAP
+    NEWC
+    STDICT
+    ENDC
+    SWAP
+    STREF
+    FALSE
+    SWAP
+    1 STI
+    s0 s0 s3 XCHG3
+    $TONCheckBook$init$_store INLINECALLDICT
+    ENDC
+  }>
+  $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
+  }>
+  $ApplyBetMessage$_constructor_owner_rounds_count_delta_r_bet_ammount_prev_bet_seqno_prev_bet_odd_flag PROCINLINE:<{
+  }>
+  $SendParameters$_constructor_to_value_mode_bounce_body PROCINLINE:<{
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
+    PUSHNULL
+    PUSHNULL
+  }>
+  $Bet$_fun_sendBetContinue PROCREF:<{
+    s2 PUSH
+    0 GTINT
+    IF:<{
+      s2 PUSH
+      DEC
+      s6 s2 s(-1) PU2XC
+      s3 s7 s6 PUSH3
+      $ApplyBetMessage$_constructor_owner_rounds_count_delta_r_bet_ammount_prev_bet_seqno_prev_bet_odd_flag INLINECALLDICT
+      3 3 BLKSWAP
+      0 PUSHINT
+      130 PUSHINT
+      s7 s6 XCHG2
+      TRUE
+      s0 s6 XCHG
+      $ApplyBetMessage$_store_cell INLINECALLDICT
+      s10 PUSH
+      4 -ROLL
+      $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+      $global_send INLINECALLDICT
+    }>
+  }>
+  $BetData$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount PROCINLINE:<{
+  }>
+  $Bet$_fun_BetData PROCREF:<{
+    s6 s5 s4 PUSH3
+    s6 s5 s4 PUSH3
+    s6 PUSH
+    $BetData$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount INLINECALLDICT
+  }>
+  $Bet$_fun_Balance PROCREF:<{
+    __tact_my_balance INLINECALLDICT
+  }>
+  $Bet$_fun_Address PROCREF:<{
+    MYADDR
+  }>
+  $Bet$_fun_require_account_manager PROCREF:<{
+    48121 PUSHINT
+    __tact_context_get_sender INLINECALLDICT
+    s8 s(-1) PUXC
+    __tact_slice_eq_bits INLINECALLDICT
+    THROWANYIFNOT
+  }>
+  $Bet$_fun_forward PROCREF:<{
+    PUSHNULL
+    PUSHNULL
+    s2 PUSH
+    ISNULL
+    NOT
+    IF:<{
+      2DROP
+      $StateInit$_not_null INLINECALLDICT
+      SWAP
+    }>ELSE<{
+      s2 POP
+    }>
+    s2 s4 XCHG
+    0 PUSHINT
+    s0 s3 XCHG
+    s0 s4 XCHG
+    66 PUSHINT
+    s2 s3 XCHG2
+    $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
+  $Bet$_fun_reply PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    SWAP
+    TRUE
+    PUSHNULL
+    $Bet$_fun_forward INLINECALLDICT
+  }>
+  $Bet$_fun_notify PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    SWAP
+    FALSE
+    PUSHNULL
+    $Bet$_fun_forward INLINECALLDICT
+  }>
+  $BetWinMessage$_constructor_amount_owner_ton_wallet PROCINLINE:<{
+  }>
+  $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount PROCINLINE:<{
+  }>
+  $DeployOk$_constructor_queryId PROCINLINE:<{
+  }>
+  %$Bet$_internal_empty PROCINLINE:<{
+    DROP
+    __tact_my_balance INLINECALLDICT
+  }>
+  $Bet$_internal_binary_SetBetInfo PROCINLINE:<{
+    s4 POP
+    s4 POP
+    s6 POP
+  }>
+  $Bet$_internal_binary_Win PROCINLINE:<{
+    DROP
+    $Bet$_fun_require_account_manager INLINECALLDICT
+    0 PUSHINT
+    66 PUSHINT
+    TRUE
+    __tact_my_balance INLINECALLDICT
+    s9 PUSH
+    $BetWinMessage$_constructor_amount_owner_ton_wallet INLINECALLDICT
+    $BetWinMessage$_store_cell INLINECALLDICT
+    s10 PUSH
+    4 -ROLL
+    $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+    $global_send INLINECALLDICT
+    __tact_context_sys GETGLOB
+    s7 s6 PUSH2
+    $TONCheckBook$_init_child INLINECALLDICT
+    s6 s8 XCHG
+    5 4 REVERSE
+    s3 s7 XCHG
+    s8 s7 s8 XCHG3
+    $Bet$_fun_sendBetContinue INLINECALLDICT
+    s7 s8 XCHG2
+    $global_contractAddress INLINECALLDICT
+    0 PUSHINT
+    130 PUSHINT
+    TRUE
+    B{b5ee9c7241010101000d000016000000004265742057696e6b38c504} B>boc PUSHREF
+    $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+    $global_send INLINECALLDICT
+    s4 s6 XCHG
+    2 4 BLKSWAP
+  }>
+  $Bet$_internal_binary_Lose PROCINLINE:<{
+    DROP
+    $Bet$_fun_require_account_manager INLINECALLDICT
+    $Bet$_fun_sendBetContinue INLINECALLDICT
+    0 PUSHINT
+    130 PUSHINT
+    TRUE
+    B{b5ee9c7241010101000e00001800000000426574204c6f73655d0b229f} B>boc PUSHREF
+    s10 PUSH
+    4 -ROLL
+    $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
+  $Bet$_internal_binary_GetBetInfo PROCINLINE:<{
+    DROP
+    s6 s5 s4 PUSH3
+    s6 s5 s4 PUSH3
+    s6 PUSH
+    $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount INLINECALLDICT
+    $ProcessBetInfo$_store_cell INLINECALLDICT
+    $Bet$_fun_reply INLINECALLDICT
+  }>
+  $Bet$_internal_text_c39249676c5a951f71517ad784655fa95c2ae4ce2c73e53cadf0b47a4c3e3faa PROCINLINE:<{
+    s6 s5 s4 PUSH3
+    s6 s5 s4 PUSH3
+    s6 PUSH
+    $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount INLINECALLDICT
+    $ProcessBetInfo$_store_cell INLINECALLDICT
+    $Bet$_fun_reply INLINECALLDICT
+  }>
+  $Bet$_internal_binary_Deploy PROCINLINE:<{
+    $DeployOk$_constructor_queryId INLINECALLDICT
+    $DeployOk$_store_cell INLINECALLDICT
+    $Bet$_fun_notify INLINECALLDICT
+  }>
+  %BetData PROC:<{
+    $Bet$_contract_load INLINECALLDICT
+    $Bet$_fun_BetData INLINECALLDICT
+    7 7 BLKDROP2
+    $BetData$_to_external INLINECALLDICT
+  }>
+  %Balance PROC:<{
+    $Bet$_contract_load INLINECALLDICT
+    $Bet$_fun_Balance INLINECALLDICT
+    7 1 BLKDROP2
+  }>
+  %Address PROC:<{
+    $Bet$_contract_load INLINECALLDICT
+    $Bet$_fun_Address INLINECALLDICT
+    7 1 BLKDROP2
+  }>
+  supported_interfaces PROC:<{
+    123515602279859691144772641439386770278 PUSHINT
+    209801025412363888721030803524359905849 PUSHINT
+    42980537499636128163026532310500881091 PUSHINT
+    209474421377847335869795010607481022628 PUSHINT
+  }>
+  get_abi_ipfs PROC:<{
+    x{697066733a2f2f516d5a334441365431586f6650756b6f55754d4175756242625a42345762646e32504353654a6842705a31664a54} PUSHSLICE
+  }>
+  lazy_deployment_completed PROC:<{
+    c4 PUSH
+    CTOS
+    1 LDI
+    SWAP
+  }>
+  $Bet$_contract_router_internal PROCREF:<{
+    c2 SAVE
+    SAMEALTSAVE
+    SWAP
+    IFJMP:<{
+      DROP
+      TRUE
+    }>
+    0 PUSHINT
+    OVER
+    SBITS
+    31 GTINT
+    IF:<{
+      DROP
+      DUP
+      32 PLDU
+    }>
+    DUP
+    0 EQINT
+    s2 PUSH
+    SBITS
+    33 LESSINT
+    AND
+    IFJMP:<{
+      2DROP
+      %$Bet$_internal_empty INLINECALLDICT
+      TRUE
+    }>
+    DUP
+    942208451 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $SetBetInfo$_load INLINECALLDICT
+      1 3 BLKDROP2
+      $Bet$_internal_binary_SetBetInfo INLINECALLDICT
+      TRUE
+    }>
+    DUP
+    174790457 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $Win$_load INLINECALLDICT
+      NIP
+      $Bet$_internal_binary_Win INLINECALLDICT
+      TRUE
+    }>
+    DUP
+    866806741 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $Lose$_load INLINECALLDICT
+      NIP
+      $Bet$_internal_binary_Lose INLINECALLDICT
+      TRUE
+    }>
+    DUP
+    2443301346 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $GetBetInfo$_load INLINECALLDICT
+      NIP
+      $Bet$_internal_binary_GetBetInfo INLINECALLDICT
+      TRUE
+    }>
+    DUP
+    2490013878 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $Deploy$_load INLINECALLDICT
+      NIP
+      $Bet$_internal_binary_Deploy INLINECALLDICT
+      TRUE
+    }>
+    0 EQINT
+    IF:<{
+      HASHSU
+      88459471760963403256470962103096249080476568064015962295070998639469169360810 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $Bet$_internal_text_c39249676c5a951f71517ad784655fa95c2ae4ce2c73e53cadf0b47a4c3e3faa INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+    }>ELSE<{
+      DROP
+    }>
+    FALSE
+  }>
+  recv_internal PROC:<{
+    SWAP
+    CTOS
+    4 LDU
+    SWAP
+    1 PUSHINT
+    AND
+    NEGATE
+    SWAP
+    LDMSGADDR
+    SWAP
+    __tact_verify_address INLINECALLDICT
+    s0 s4 s2 PUXCPU
+    s0 s3 XCHG
+    4 TUPLE
+    __tact_context SETGLOB
+    s0 s2 XCHG
+    __tact_context_sender SETGLOB
+    $Bet$_contract_load INLINECALLDICT
+    2 7 BLKSWAP
+    $Bet$_contract_router_internal INLINECALLDICT
+    130 THROWIFNOT
+    $Bet$_contract_store INLINECALLDICT
+  }>
+}END>c

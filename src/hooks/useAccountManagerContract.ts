@@ -24,6 +24,7 @@ import {
     Ellipsis,
 } from "../components/styled/styled";
 import { send } from "vite";
+import { trace } from "console";
 // import internal from "stream";
 
 const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time))
@@ -58,6 +59,9 @@ export function useAccountManagerContract() {
     const jettonWalletContract = useAsyncInitialize(async()=>{
         if(!jettonContract || !client) return;
 
+        console.log('Cur_wallet_addr: ', wallet_address)
+        console.log('Cur_wallet_addr 2: ', Address.parse(wallet_address!).toString())
+        
         const jettonWalletAddress = await jettonContract.getGetWalletAddress(
             Address.parse(Address.parse(wallet_address!).toString())
         )
@@ -66,17 +70,24 @@ export function useAccountManagerContract() {
     }, [jettonContract, client])
 
     const TonCheckBookContract = useAsyncInitialize(async()=> {
-        if(!client || !accountManagerContract || !wallet_address) return;
-
-        const checkBookAddress = await accountManagerContract.getTonCheckBookAddress(Address.parse(wallet_address!))
-        // console.log(checkBookAddress.toString())
+        if(!client || !accountManagerContract || !wallet_address) {
+            console.log(client, accountManagerContract, wallet_address);
+            console.log('NOT ABOBA')
+            return;
+        }
+        console.log('ABOBA');
+        console.log("Manager: ", Address.parse(accountManagerAddress).toString());
+        console.log("Wallet:  ", Address.parse(wallet_address).toString());
         
-        let contract_result = client.open(await TONCheckBook.fromInit(Address.parse(accountManagerAddress), Address.parse(wallet_address))) as OpenedContract<TONCheckBook>
-        // console.log(contract_result.address.toString())
+        let contract_result = client.open(await TONCheckBook.fromInit(Address.parse(Address.parse(accountManagerAddress).toString()), Address.parse(Address.parse(wallet_address!).toString()))) as OpenedContract<TONCheckBook>
+        console.log(contract_result.address.toString())
+        console.log('ABOBA - 2')
 
         return contract_result
 
     }, [client, accountManagerContract, wallet_address])
+    console.log(TonCheckBookContract)
+
 
     useEffect(()=>{
         async function getBalance() {
@@ -200,7 +211,7 @@ export function useAccountManagerContract() {
             const message: Mint = {
                 $$type: "Mint",
                 amount: 150n,
-                to: Address.parse(sender.address!.toString())
+                receiver: Address.parse(sender.address!.toString())
             }
 
             accountManagerContract?.send(sender, {
@@ -227,13 +238,27 @@ export function useAccountManagerContract() {
                 return
             }
 
-            let seqno = await accountManagerContract?.getMaxBetIdInCurrentBlock()
-            let flag = await accountManagerContract?.getCurrentBlockOddFlag()
-            if (seqno ==undefined || flag == undefined) {
-                console.log("Can not get flag or seqno")
-                console.log("Flag: ", flag)
-                console.log("Seqno: ", seqno)
-                return}
+            let trans_flag = false
+            let seqno = 0n
+            let flag = false
+            while (!trans_flag){
+                try {
+                    console.log('try to get seqno and flag')
+                    seqno = await accountManagerContract?.getMaxBetIdInCurrentBlock();
+                    flag = await accountManagerContract?.getCurrentBlockOddFlag();
+                    if (seqno ==undefined || flag == undefined) {
+                        console.log("Can not get flag or seqno");
+                        console.log("Flag: ", flag);
+                        console.log("Seqno: ", seqno);
+                    }
+                    await sleep(1000);
+                    trans_flag=true;
+                }
+                catch (error: any|undefined){
+                    console.error(Error(error).message);
+                }
+            }
+
 
             console.log("Flag: ", flag)
             console.log("Seqno: ", seqno)
@@ -250,14 +275,22 @@ export function useAccountManagerContract() {
                 is_negative: is_negative_flag
             }
             console.log("Make bet with seqno: ", seqno + 1n, "And flag: ", flag)
-            let result_flag = false;
-            while (!result_flag){
+            trans_flag = false;
+            while (!trans_flag){
                 try {
+                    console.log("Applying bet");
+                    console.log(message);
+                    console.log(admin_sender?.address);
+
+
                     let trans = TonCheckBookContract?.send(admin_sender!, {
-                        value: toNano("3")
+                        value: toNano("0.2")
                     }, message)
-                    result_flag = true
-                    console.log("Transaction applyed", trans)
+
+                    await sleep(2000);
+
+                    console.log('Transaction Applyed', trans);
+                    trans_flag = true;
                 } catch (error: any|undefined){
                     console.error(Error(error).message);
                 }
@@ -268,17 +301,17 @@ export function useAccountManagerContract() {
                 user_delta *= -1
             }
 
-            const response = await fetch("http://81.31.245.206:5000/user", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json' // Убедитесь, что используете этот заголовок
-                },
-                body: JSON.stringify({
-                    "wallet_address": wallet_address!.toString(),
-                    "round_amount": 1,
-                    "delta_r": user_delta
-                })
-            });
+            // const response = await fetch("http://81.31.245.206:5000/user", {
+            //     method: "POST",
+            //     headers: {
+            //         'Content-Type': 'application/json' // Убедитесь, что используете этот заголовок
+            //     },
+            //     body: JSON.stringify({
+            //         "wallet_address": wallet_address!.toString(),
+            //         "round_amount": 1,
+            //         "delta_r": user_delta
+            //     })
+            // });
 
         },
 
@@ -410,7 +443,7 @@ export function useAccountManagerContract() {
             if (new_course == 0n) {
                 new_course = 1n
             } 
-            let oracul_delta: Number = ((Number(course / new_course) - 1) * 100)*1000
+            let oracul_delta: Number = (Number(course / new_course) - 1)*1000
 
             let deltas = [];
 
@@ -434,7 +467,7 @@ export function useAccountManagerContract() {
                     let bet_address = await accountManagerContract.getBetAddressBySeqnoInApplyedBlock(i)
                     let current_bet = client?.open(await Bet.fromAddress(bet_address!))
                     let bet_data = current_bet?.getBetData()
-                    let delta = (await bet_data!).delta_r
+                    let delta = Number((await bet_data!).delta_r);
 
                     let mistake = abs(BigInt(Number(oracul_delta) - Number(delta)));
 
@@ -490,6 +523,8 @@ export function useAccountManagerContract() {
                             $$type: "CreateNewBlock",
                             course: course
                         })
+                    sleep(20000)
+                    
                     console.log("New block Applyed", NewBlockResult)
                 } catch (error) {
                     console.log("Error occured: ", (error as Error).message);
@@ -579,7 +614,7 @@ export function useAccountManagerContract() {
                                 console.log("Current wallet seqno: ", cur_seqno)
                                 let trans = await checkBook.send(
                                     admin_sender!, {
-                                    value: toNano("3")
+                                    value: toNano("0.2")
                                 }, message_bet)
                                 console.log("Current transactions: ", trans)
                                 console.log("Bet applyed")

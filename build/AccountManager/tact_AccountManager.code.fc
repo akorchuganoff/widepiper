@@ -122,10 +122,14 @@
     return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
 }
 
-(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_InitMinter((slice, slice, int, int, int, int, int, int, int, int, int) $self, (cell) $msg) impure inline {
+(((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_InitMinter((slice, slice, int, int, int, int, int, int, int, int, int) $self, (cell, int, slice) $msg) impure inline {
     var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
-    var ($msg'content) = $msg;
+    var ($msg'content, $msg'is_minter_present, $msg'minter_address) = $msg;
     ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)~$AccountManager$_fun_requireOwner();
+    if ($msg'is_minter_present) {
+        $self'minter = __tact_not_null($msg'minter_address);
+        return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+    }
     var ($minter_init'code, $minter_init'data) = $SampleJetton$_init_child(__tact_context_sys, my_address(), $msg'content);
     $self'minter = $global_contractAddress(($minter_init'code, $minter_init'data));
     $global_send($SendParameters$_constructor_to_value_mode_bounce_code_data_body($self'minter, 100000000, 2, true, $minter_init'code, $minter_init'data, $Deploy$_store_cell($Deploy$_constructor_queryId(0))));
@@ -145,15 +149,21 @@
 
 (((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_Mint((slice, slice, int, int, int, int, int, int, int, int, int) $self, (int, slice) $msg) impure inline {
     var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
-    var ($msg'amount, $msg'to) = $msg;
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'minter, 0, (64 + 2), true, $Mint$_store_cell($Mint$_constructor_amount_to($msg'amount, $msg'to))));
+    var ($msg'amount, $msg'receiver) = $msg;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'minter, 0, (64 + 2), true, $Mint$_store_cell($Mint$_constructor_amount_receiver($msg'amount, $msg'receiver))));
     return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
 }
 
 (((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_InternalBetWinMessage((slice, slice, int, int, int, int, int, int, int, int, int) $self, (int, slice) $msg) impure inline {
     var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
     var ($msg'amount, $msg'owner_ton_wallet) = $msg;
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'minter, 50000000, (64 + 2), true, $Mint$_store_cell($Mint$_constructor_amount_to($msg'amount, $msg'owner_ton_wallet))));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'minter, 50000000, (64 + 2), true, $Mint$_store_cell($Mint$_constructor_amount_receiver($msg'amount, $msg'owner_ton_wallet))));
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
+((slice, slice, int, int, int, int, int, int, int, int, int), ()) $AccountManager$_internal_text_eae3eec1fc17be1459b1ae03cb9234d8cd2f5efb02ac427886ae263bba8ce15f((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'minter, 0, (64 + 2), true, $ChangeOwner$_store_cell($ChangeOwner$_constructor_queryId_newOwner(0, $self'owner))));
     return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
 }
 
@@ -273,7 +283,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmcrKpRtJTAwpSau8RHGn8ruVy8dDWVDSpZsp7xLNorj55";
+    return "ipfs://QmXJ8vEUUabZWXxdesBQsAxS4hqUFEYSsTjP7kjGs534ww";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -311,7 +321,7 @@ _ lazy_deployment_completed() method_id {
     }
     
     ;; Receive InitMinter message
-    if (op == 3972604618) {
+    if (op == 1112563628) {
         var msg = in_msg~$InitMinter$_load();
         self~$AccountManager$_internal_binary_InitMinter(msg);
         return (self, true);
@@ -325,7 +335,7 @@ _ lazy_deployment_completed() method_id {
     }
     
     ;; Receive Mint message
-    if (op == 1519427335) {
+    if (op == 4235234258) {
         var msg = in_msg~$Mint$_load();
         self~$AccountManager$_internal_binary_Mint(msg);
         return (self, true);
@@ -350,6 +360,17 @@ _ lazy_deployment_completed() method_id {
         var msg = in_msg~$Deploy$_load();
         self~$AccountManager$_internal_binary_Deploy(msg);
         return (self, true);
+    }
+    
+    ;; Text Receivers
+    if (op == 0) {
+        var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Transfer to admin" message
+        if (text_op == 0xeae3eec1fc17be1459b1ae03cb9234d8cd2f5efb02ac427886ae263bba8ce15f) {
+            self~$AccountManager$_internal_text_eae3eec1fc17be1459b1ae03cb9234d8cd2f5efb02ac427886ae263bba8ce15f();
+            return (self, true);
+        }
     }
     
     return (self, false);

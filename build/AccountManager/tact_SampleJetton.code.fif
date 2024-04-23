@@ -3,7 +3,6 @@ PROGRAM{
   DECLPROC __tact_load_address
   DECLPROC __tact_load_address_opt
   DECLPROC __tact_store_address
-  DECLPROC __tact_store_address_opt
   DECLPROC __tact_create_address
   DECLPROC __tact_compute_contract_address
   DECLPROC __tact_my_balance
@@ -17,6 +16,9 @@ PROGRAM{
   DECLPROC $Deploy$_load
   DECLPROC $DeployOk$_store
   DECLPROC $DeployOk$_store_cell
+  DECLPROC $ChangeOwner$_load
+  DECLPROC $ChangeOwnerOk$_store
+  DECLPROC $ChangeOwnerOk$_store_cell
   DECLPROC $Mint$_load
   DECLPROC $TokenTransferInternal$_store
   DECLPROC $TokenTransferInternal$_store_cell
@@ -24,6 +26,9 @@ PROGRAM{
   DECLPROC $TokenExcesses$_store
   DECLPROC $TokenExcesses$_store_cell
   DECLPROC $TokenUpdateContent$_load
+  DECLPROC $ProvideWalletAddress$_load
+  DECLPROC $TakeWalletAddress$_store
+  DECLPROC $TakeWalletAddress$_store_cell
   DECLPROC $SampleJetton$_store
   DECLPROC $SampleJetton$_load
   DECLPROC $StateInit$_get_code
@@ -41,30 +46,35 @@ PROGRAM{
   DECLPROC $global_send
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $SampleJetton$_fun_forward
+  DECLPROC $SampleJetton$_fun_reply
   DECLPROC $SampleJetton$_fun_notify
+  DECLPROC $SendParameters$_constructor_to_value_bounce_mode_body_code_data
+  DECLPROC $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload
   DECLPROC $JettonDefaultWallet$_init_child
   DECLPROC $SampleJetton$_fun_getJettonWalletInit
-  DECLPROC $SampleJetton$_fun_get_wallet_address
-  DECLPROC $SampleJetton$_fun_my_address
-  DECLPROC $JettonData$_constructor_totalSupply_mintable_owner_content
-  DECLPROC $SampleJetton$_fun_get_jetton_data
-  DECLPROC $SendParameters$_constructor_to_value_bounce_mode_body_code_data
-  DECLPROC $TokenTransferInternal$_constructor_amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload
   DECLPROC $SampleJetton$_fun_mint
   DECLPROC $SampleJetton$_fun_requireWallet
+  DECLPROC $JettonData$_constructor_totalSupply_mintable_owner_content_walletCode
+  DECLPROC $SampleJetton$_fun_get_jetton_data
+  DECLPROC $SampleJetton$_fun_get_wallet_address
   DECLPROC $SampleJetton$_fun_requireOwner
   DECLPROC $SampleJetton$_fun_owner
   DECLPROC $SendParameters$_constructor_to_value_bounce_mode_body
   DECLPROC $TokenExcesses$_constructor_queryId
+  DECLPROC $SendParameters$_constructor_to_value_mode_body
+  DECLPROC $TakeWalletAddress$_constructor_query_id_wallet_address_owner_address
+  DECLPROC $ChangeOwnerOk$_constructor_queryId_newOwner
   DECLPROC $DeployOk$_constructor_queryId
   DECLPROC $SampleJetton$_internal_binary_Mint
-  DECLPROC $SampleJetton$_internal_text_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2
+  DECLPROC $SampleJetton$_internal_text_fcbeb9a480966477480639c7cea4a578aa6a113b2903b26d01bc384663eceef6
+  DECLPROC $SampleJetton$_internal_text_dc004c5b75be74376bd79df8713f2390620cc8a3095068b0583eb28ca3ac8ba0
   DECLPROC $SampleJetton$_internal_binary_TokenUpdateContent
   DECLPROC $SampleJetton$_internal_binary_TokenBurnNotification
+  DECLPROC $SampleJetton$_internal_binary_ProvideWalletAddress
+  DECLPROC $SampleJetton$_internal_binary_ChangeOwner
   DECLPROC $SampleJetton$_internal_binary_Deploy
-  103289 DECLMETHOD %get_wallet_address
-  112365 DECLMETHOD %my_address
   106029 DECLMETHOD %get_jetton_data
+  103289 DECLMETHOD %get_wallet_address
   83229 DECLMETHOD %owner
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
@@ -112,18 +122,6 @@ PROGRAM{
   __tact_store_address PROCINLINE:<{
     __tact_verify_address INLINECALLDICT
     STSLICER
-  }>
-  __tact_store_address_opt PROCINLINE:<{
-    DUP
-    ISNULL
-    IF:<{
-      DROP
-      0 PUSHINT
-      SWAP
-      2 STU
-    }>ELSE<{
-      __tact_store_address INLINECALLDICT
-    }>
   }>
   __tact_create_address PROCINLINE:<{
     NEWC
@@ -214,10 +212,34 @@ PROGRAM{
     $DeployOk$_store INLINECALLDICT
     ENDC
   }>
+  $ChangeOwner$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    2174598809 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    __tact_load_address INLINECALLDICT
+    s1 s2 XCHG
+  }>
+  $ChangeOwnerOk$_store PROCINLINE:<{
+    846932810 PUSHINT
+    s0 s3 XCHG2
+    32 STU
+    64 STU
+    SWAP
+    __tact_store_address INLINECALLDICT
+  }>
+  $ChangeOwnerOk$_store_cell PROCINLINE:<{
+    NEWC
+    -ROT
+    $ChangeOwnerOk$_store INLINECALLDICT
+    ENDC
+  }>
   $Mint$_load PROCINLINE:<{
     32 LDU
     SWAP
-    1519427335 PUSHINT
+    4235234258 PUSHINT
     EQUAL
     129 THROWIFNOT
     257 PUSHINT
@@ -236,7 +258,7 @@ PROGRAM{
     SWAP
     __tact_store_address INLINECALLDICT
     SWAP
-    __tact_store_address_opt INLINECALLDICT
+    __tact_store_address INLINECALLDICT
     SWAP
     STGRAMS
     SWAP
@@ -277,53 +299,66 @@ PROGRAM{
   $TokenUpdateContent$_load PROCINLINE:<{
     32 LDU
     SWAP
-    201882270 PUSHINT
+    2937889386 PUSHINT
     EQUAL
     129 THROWIFNOT
-    1 LDI
-    SWAP
-    IF:<{
-      LDREF
-    }>ELSE<{
-      PUSHNULL
-      SWAP
-    }>
+    LDREF
     SWAP
   }>
-  $SampleJetton$_store PROCINLINE:<{
-    s4 s3 XCHG2
-    STGRAMS
+  $ProvideWalletAddress$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    745978227 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    64 LDU
+    __tact_load_address INLINECALLDICT
+    SWAP
+    1 LDI
+    3 -ROLL
+  }>
+  $TakeWalletAddress$_store PROCINLINE:<{
+    3513996288 PUSHINT
+    s0 s4 XCHG2
+    32 STU
+    s1 s2 XCHG
+    64 STU
     SWAP
     __tact_store_address INLINECALLDICT
-    s2 PUSH
+    OVER
     ISNULL
     NOT
     IF:<{
       TRUE
       SWAP
       1 STI
-      s1 s2 XCHG
       STREF
     }>ELSE<{
-      s2 POP
       FALSE
-      ROT
+      s2 POP
       1 STI
     }>
+  }>
+  $TakeWalletAddress$_store_cell PROCINLINE:<{
+    NEWC
+    3 -ROLL
+    $TakeWalletAddress$_store INLINECALLDICT
+    ENDC
+  }>
+  $SampleJetton$_store PROCINLINE:<{
+    s4 s3 XCHG2
+    STGRAMS
+    SWAP
+    __tact_store_address INLINECALLDICT
+    s1 s2 XCHG
+    STREF
     1 STI
   }>
   $SampleJetton$_load PROCINLINE:<{
     LDGRAMS
     __tact_load_address INLINECALLDICT
     SWAP
-    1 LDI
-    SWAP
-    IF:<{
-      LDREF
-    }>ELSE<{
-      PUSHNULL
-      SWAP
-    }>
+    LDREF
     1 LDI
     4 -ROLL
   }>
@@ -341,14 +376,7 @@ PROGRAM{
   $SampleJetton$init$_load PROCINLINE:<{
     __tact_load_address INLINECALLDICT
     SWAP
-    1 LDI
-    SWAP
-    IF:<{
-      LDREF
-    }>ELSE<{
-      PUSHNULL
-      SWAP
-    }>
+    LDREF
     -ROT
   }>
   $JettonDefaultWallet$init$_store PROCINLINE:<{
@@ -540,12 +568,25 @@ PROGRAM{
     $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
+  $SampleJetton$_fun_reply PROCINLINE:<{
+    __tact_context_get_sender INLINECALLDICT
+    SWAP
+    TRUE
+    PUSHNULL
+    $SampleJetton$_fun_forward INLINECALLDICT
+  }>
   $SampleJetton$_fun_notify PROCINLINE:<{
     __tact_context_get_sender INLINECALLDICT
     SWAP
     FALSE
     PUSHNULL
     $SampleJetton$_fun_forward INLINECALLDICT
+  }>
+  $SendParameters$_constructor_to_value_bounce_mode_body_code_data PROCINLINE:<{
+    s4 s6 XCHG
+    s4 s5 XCHG
+  }>
+  $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload PROCINLINE:<{
   }>
   $JettonDefaultWallet$_init_child PROCREF:<{
     s0 s2 XCHG
@@ -580,30 +621,6 @@ PROGRAM{
     ROT
     $JettonDefaultWallet$_init_child INLINECALLDICT
   }>
-  $SampleJetton$_fun_get_wallet_address PROCREF:<{
-    $SampleJetton$_fun_getJettonWalletInit INLINECALLDICT
-    $global_contractAddress INLINECALLDICT
-  }>
-  $SampleJetton$_fun_my_address PROCREF:<{
-    MYADDR
-  }>
-  $JettonData$_constructor_totalSupply_mintable_owner_content PROCINLINE:<{
-  }>
-  $SampleJetton$_fun_get_jetton_data PROCREF:<{
-    MYADDR
-    $SampleJetton$_fun_getJettonWalletInit INLINECALLDICT
-    2DROP
-    s3 s0 s2 PUSH3
-    s4 PUSH
-    $JettonData$_constructor_totalSupply_mintable_owner_content INLINECALLDICT
-  }>
-  $SendParameters$_constructor_to_value_bounce_mode_body_code_data PROCINLINE:<{
-    s4 s6 XCHG
-    s4 s5 XCHG
-  }>
-  $TokenTransferInternal$_constructor_amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload PROCINLINE:<{
-    s4 s5 XCHG
-  }>
   $SampleJetton$_fun_mint PROCREF:<{
     s6 s1 XCPU
     ADD
@@ -618,19 +635,19 @@ PROGRAM{
     MYADDR
     OVER
     $global_emptySlice INLINECALLDICT
-    s5 s14 XCHG
-    s3 s4 XCHG
+    s3 s5 XCHG
+    s4 s14 XCHG
     s2 s3 XCHG
     s2 s15 XCHG
-    $TokenTransferInternal$_constructor_amount_queryId_from_responseAddress_forwardTonAmount_forwardPayload INLINECALLDICT
+    $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload INLINECALLDICT
     $TokenTransferInternal$_store_cell INLINECALLDICT
     s6 s5 s0 XCHG3
-    s4 s9 XCHG
-    s3 s10 XCHG
-    s0 s9 s10 XCHG3
+    s4 s10 XCHG
+    s3 s9 XCHG
+    s0 s10 s9 XCHG3
     $SendParameters$_constructor_to_value_bounce_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
-    2SWAP
+    s0 s0 s3 XCHG3
   }>
   $SampleJetton$_fun_requireWallet PROCREF:<{
     __tact_context_get INLINECALLDICT
@@ -647,6 +664,20 @@ PROGRAM{
     s1 s5 XCHG
     THROWANYIFNOT
     3 ROLL
+  }>
+  $JettonData$_constructor_totalSupply_mintable_owner_content_walletCode PROCINLINE:<{
+  }>
+  $SampleJetton$_fun_get_jetton_data PROCREF:<{
+    MYADDR
+    $SampleJetton$_fun_getJettonWalletInit INLINECALLDICT
+    $StateInit$_get_code INLINECALLDICT
+    s4 s1 s(-2) PU2XC
+    s5 s4 s(-2) PU2XC
+    $JettonData$_constructor_totalSupply_mintable_owner_content_walletCode INLINECALLDICT
+  }>
+  $SampleJetton$_fun_get_wallet_address PROCREF:<{
+    $SampleJetton$_fun_getJettonWalletInit INLINECALLDICT
+    $global_contractAddress INLINECALLDICT
   }>
   $SampleJetton$_fun_requireOwner PROCREF:<{
     __tact_context_get_sender INLINECALLDICT
@@ -665,27 +696,69 @@ PROGRAM{
   }>
   $TokenExcesses$_constructor_queryId PROCINLINE:<{
   }>
+  $SendParameters$_constructor_to_value_mode_body PROCINLINE:<{
+    TRUE
+    4 -ROLL
+    PUSHNULL
+    PUSHNULL
+  }>
+  $TakeWalletAddress$_constructor_query_id_wallet_address_owner_address PROCINLINE:<{
+  }>
+  $ChangeOwnerOk$_constructor_queryId_newOwner PROCINLINE:<{
+  }>
   $DeployOk$_constructor_queryId PROCINLINE:<{
   }>
   $SampleJetton$_internal_binary_Mint PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
-    s1 s2 XCHG
+    s5 PUSH
+    3734 PUSHINT
+    s0 s2 XCHG
+    __tact_slice_eq_bits INLINECALLDICT
+    THROWANYIFNOT
+    18668 PUSHINT
+    s3 PUSH
+    THROWANYIFNOT
+    s1 s4 XCPU
     $SampleJetton$_fun_mint INLINECALLDICT
   }>
-  $SampleJetton$_internal_text_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 PROCINLINE:<{
+  $SampleJetton$_internal_text_fcbeb9a480966477480639c7cea4a578aa6a113b2903b26d01bc384663eceef6 PROCINLINE:<{
     __tact_context_get INLINECALLDICT
     s2 s3 XCHG
     3 BLKDROP
-    1000000000 PUSHINT
-    OVER
+    18668 PUSHINT
+    s2 PUSH
+    THROWANYIFNOT
+    100 PUSHINT
+    s4 PUSH
     $SampleJetton$_fun_mint INLINECALLDICT
+  }>
+  $SampleJetton$_internal_text_dc004c5b75be74376bd79df8713f2390620cc8a3095068b0583eb28ca3ac8ba0 PROCINLINE:<{
+    DROP
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
+    s2 PUSH
+    3734 PUSHINT
+    s0 s2 XCHG
+    __tact_slice_eq_bits INLINECALLDICT
+    THROWANYIFNOT
+    FALSE
   }>
   $SampleJetton$_internal_binary_TokenUpdateContent PROCINLINE:<{
     4 -ROLL
     $SampleJetton$_fun_requireOwner INLINECALLDICT
     NIP
+    __tact_context_get_sender INLINECALLDICT
+    0 PUSHINT
+    FALSE
+    66 PUSHINT
+    s2 PUSH
+    $TokenExcesses$_constructor_queryId INLINECALLDICT
+    $TokenExcesses$_store_cell INLINECALLDICT
+    $SendParameters$_constructor_to_value_bounce_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
     s1 s3 s0 XCHG3
   }>
   $SampleJetton$_internal_binary_TokenBurnNotification PROCINLINE:<{
@@ -719,10 +792,56 @@ PROGRAM{
     }>
     s3 s0 s0 XCHG3
   }>
+  $SampleJetton$_internal_binary_ProvideWalletAddress PROCINLINE:<{
+    __tact_context_get INLINECALLDICT
+    s2 s3 XCHG
+    3 BLKDROP
+    __tact_context_sys GETGLOB
+    MYADDR
+    s4 PUSH
+    $JettonDefaultWallet$_init_child INLINECALLDICT
+    $global_contractAddress INLINECALLDICT
+    PUSHNULL
+    s0 s3 XCHG
+    IF:<{
+      s2 POP
+      NEWC
+      s0 s3 XCHG2
+      __tact_store_address INLINECALLDICT
+      ENDC
+      ROT
+    }>ELSE<{
+      s3 POP
+    }>
+    0 PUSHINT
+    s4 s3 XCHG2
+    64 PUSHINT
+    s0 s3 XCHG
+    $TakeWalletAddress$_constructor_query_id_wallet_address_owner_address INLINECALLDICT
+    $TakeWalletAddress$_store_cell INLINECALLDICT
+    $SendParameters$_constructor_to_value_mode_body INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
+  $SampleJetton$_internal_binary_ChangeOwner PROCINLINE:<{
+    4 2 BLKSWAP
+    $SampleJetton$_fun_requireOwner INLINECALLDICT
+    s2 POP
+    s4 s3 XCPU
+    $ChangeOwnerOk$_constructor_queryId_newOwner INLINECALLDICT
+    $ChangeOwnerOk$_store_cell INLINECALLDICT
+    s2 s4 XCHG
+    $SampleJetton$_fun_reply INLINECALLDICT
+  }>
   $SampleJetton$_internal_binary_Deploy PROCINLINE:<{
     $DeployOk$_constructor_queryId INLINECALLDICT
     $DeployOk$_store_cell INLINECALLDICT
     $SampleJetton$_fun_notify INLINECALLDICT
+  }>
+  %get_jetton_data PROC:<{
+    $SampleJetton$_contract_load INLINECALLDICT
+    $SampleJetton$_fun_get_jetton_data INLINECALLDICT
+    4 5 BLKDROP2
+    $JettonData$_to_external INLINECALLDICT
   }>
   %get_wallet_address PROC:<{
     __tact_verify_address INLINECALLDICT
@@ -730,17 +849,6 @@ PROGRAM{
     4 ROLL
     $SampleJetton$_fun_get_wallet_address INLINECALLDICT
     4 1 BLKDROP2
-  }>
-  %my_address PROC:<{
-    $SampleJetton$_contract_load INLINECALLDICT
-    $SampleJetton$_fun_my_address INLINECALLDICT
-    4 1 BLKDROP2
-  }>
-  %get_jetton_data PROC:<{
-    $SampleJetton$_contract_load INLINECALLDICT
-    $SampleJetton$_fun_get_jetton_data INLINECALLDICT
-    4 4 BLKDROP2
-    $JettonData$_to_external INLINECALLDICT
   }>
   %owner PROC:<{
     $SampleJetton$_contract_load INLINECALLDICT
@@ -754,9 +862,10 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
     258390863389042349688353801369539695109 PUSHINT
     86142586315491086060343270784266291122 PUSHINT
+    322875185039650075936310953974817993034 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d534e526137725935415859347253437163387278357a6d6e37346439546d76455631447531373975707a4334} PUSHSLICE
+    x{697066733a2f2f516d5959433169577a343272357641636756426b5136414748444d32585148777275757a554b796a32737459634d} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -782,7 +891,7 @@ PROGRAM{
       32 PLDU
     }>
     DUP
-    1519427335 PUSHINT
+    4235234258 PUSHINT
     EQUAL
     IFJMP:<{
       DROP
@@ -792,7 +901,7 @@ PROGRAM{
       TRUE
     }>
     DUP
-    201882270 PUSHINT
+    2937889386 PUSHINT
     EQUAL
     IFJMP:<{
       DROP
@@ -812,6 +921,26 @@ PROGRAM{
       TRUE
     }>
     DUP
+    745978227 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $ProvideWalletAddress$_load INLINECALLDICT
+      1 3 BLKDROP2
+      $SampleJetton$_internal_binary_ProvideWalletAddress INLINECALLDICT
+      TRUE
+    }>
+    DUP
+    2174598809 PUSHINT
+    EQUAL
+    IFJMP:<{
+      DROP
+      $ChangeOwner$_load INLINECALLDICT
+      1 2 BLKDROP2
+      $SampleJetton$_internal_binary_ChangeOwner INLINECALLDICT
+      TRUE
+    }>
+    DUP
     2490013878 PUSHINT
     EQUAL
     IFJMP:<{
@@ -824,10 +953,19 @@ PROGRAM{
     0 EQINT
     IF:<{
       HASHSU
-      92748154967237992140665580847895802782213764542359950109876145449566260965554 PUSHINT
+      DUP
+      114319820043338273756724545349405963582647504019519623841762688061413941636854 PUSHINT
       EQUAL
       IFJMP:<{
-        $SampleJetton$_internal_text_cd0d986cb1a2f468ae7089f4fc3162c116e5f53fbd11a6839f52dbf5040830b2 INLINECALLDICT
+        DROP
+        $SampleJetton$_internal_text_fcbeb9a480966477480639c7cea4a578aa6a113b2903b26d01bc384663eceef6 INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+      99509353686795994580079343596348776708726008258819386693306414918577339272096 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $SampleJetton$_internal_text_dc004c5b75be74376bd79df8713f2390620cc8a3095068b0583eb28ca3ac8ba0 INLINECALLDICT
         TRUE
         RETALT
       }>

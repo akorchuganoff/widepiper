@@ -85,16 +85,38 @@ cell $DeployOk$_store_cell((int) v) inline {
 }
 
 ;;
+;; Type: ChangeOwner
+;; Header: 0x819dbe99
+;; TLB: change_owner#819dbe99 queryId:uint64 newOwner:address = ChangeOwner
+;;
+
+builder $ChangeOwner$_store(builder build_0, (int, slice) v) inline {
+    var (v'queryId, v'newOwner) = v;
+    build_0 = store_uint(build_0, 2174598809, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    build_0 = __tact_store_address(build_0, v'newOwner);
+    return build_0;
+}
+
+cell $ChangeOwner$_store_cell((int, slice) v) inline {
+    return $ChangeOwner$_store(begin_cell(), v).end_cell();
+}
+
+((int, slice)) $ChangeOwner$_constructor_queryId_newOwner(int queryId, slice newOwner) inline {
+    return (queryId, newOwner);
+}
+
+;;
 ;; Type: Mint
-;; Header: 0x5a909f07
-;; TLB: mint#5a909f07 amount:int257 to:address = Mint
+;; Header: 0xfc708bd2
+;; TLB: mint#fc708bd2 amount:int257 receiver:address = Mint
 ;;
 
 builder $Mint$_store(builder build_0, (int, slice) v) inline {
-    var (v'amount, v'to) = v;
-    build_0 = store_uint(build_0, 1519427335, 32);
+    var (v'amount, v'receiver) = v;
+    build_0 = store_uint(build_0, 4235234258, 32);
     build_0 = build_0.store_int(v'amount, 257);
-    build_0 = __tact_store_address(build_0, v'to);
+    build_0 = __tact_store_address(build_0, v'receiver);
     return build_0;
 }
 
@@ -103,14 +125,14 @@ cell $Mint$_store_cell((int, slice) v) inline {
 }
 
 (slice, ((int, slice))) $Mint$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 1519427335);
+    throw_unless(129, sc_0~load_uint(32) == 4235234258);
     var v'amount = sc_0~load_int(257);
-    var v'to = sc_0~__tact_load_address();
-    return (sc_0, (v'amount, v'to));
+    var v'receiver = sc_0~__tact_load_address();
+    return (sc_0, (v'amount, v'receiver));
 }
 
-((int, slice)) $Mint$_constructor_amount_to(int amount, slice to) inline {
-    return (amount, to);
+((int, slice)) $Mint$_constructor_amount_receiver(int amount, slice receiver) inline {
+    return (amount, receiver);
 }
 
 ;;
@@ -140,14 +162,16 @@ cell $Mint$_store_cell((int, slice) v) inline {
 
 ;;
 ;; Type: InitMinter
-;; Header: 0xecc922ca
-;; TLB: init_minter#ecc922ca content:Maybe ^cell = InitMinter
+;; Header: 0x42505fac
+;; TLB: init_minter#42505fac content:^cell is_minter_present:bool minter_address:Maybe address = InitMinter
 ;;
 
-(slice, ((cell))) $InitMinter$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 3972604618);
-    var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
-    return (sc_0, (v'content));
+(slice, ((cell, int, slice))) $InitMinter$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1112563628);
+    var v'content = sc_0~load_ref();
+    var v'is_minter_present = sc_0~load_int(1);
+    var v'minter_address = sc_0~__tact_load_address_opt();
+    return (sc_0, (v'content, v'is_minter_present, v'minter_address));
 }
 
 ;;
@@ -199,7 +223,7 @@ builder $Bet$init$_store(builder build_0, (slice, int, int) v) inline {
 builder $SampleJetton$init$_store(builder build_0, (slice, cell) v) inline {
     var (v'owner, v'content) = v;
     build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = ~ null?(v'content) ? build_0.store_int(true, 1).store_ref(v'content) : build_0.store_int(false, 1);
+    build_0 = build_0.store_ref(v'content);
     return build_0;
 }
 
@@ -221,6 +245,34 @@ builder $SampleJetton$init$_store(builder build_0, (slice, cell) v) inline {
     b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
     b = b.store_int(false, 1);
     b = $SampleJetton$init$_store(b, ($owner, $content));
+    return (mine, b.end_cell());
+}
+
+;;
+;; Type: JettonDefaultWallet
+;;
+
+builder $JettonDefaultWallet$init$_store(builder build_0, (slice, slice) v) inline {
+    var (v'master, v'owner) = v;
+    build_0 = __tact_store_address(build_0, v'master);
+    build_0 = __tact_store_address(build_0, v'owner);
+    return build_0;
+}
+
+(cell, cell) $JettonDefaultWallet$_init_child(cell sys', slice $master, slice $owner) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: JettonDefaultWallet
+    cell mine = __tact_dict_get_code(source, 55471);
+    contracts = __tact_dict_set_code(contracts, 55471, mine);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $JettonDefaultWallet$init$_store(b, ($master, $owner));
     return (mine, b.end_cell());
 }
 
@@ -253,34 +305,6 @@ builder $TONCheckBook$init$_store(builder build_0, (slice, slice) v) inline {
     b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
     b = b.store_int(false, 1);
     b = $TONCheckBook$init$_store(b, ($accountManager, $owner));
-    return (mine, b.end_cell());
-}
-
-;;
-;; Type: JettonDefaultWallet
-;;
-
-builder $JettonDefaultWallet$init$_store(builder build_0, (slice, slice) v) inline {
-    var (v'master, v'owner) = v;
-    build_0 = __tact_store_address(build_0, v'master);
-    build_0 = __tact_store_address(build_0, v'owner);
-    return build_0;
-}
-
-(cell, cell) $JettonDefaultWallet$_init_child(cell sys', slice $master, slice $owner) inline_ref {
-    slice sc' = sys'.begin_parse();
-    cell source = sc'~load_dict();
-    cell contracts = new_dict();
-    
-    ;; Contract Code: JettonDefaultWallet
-    cell mine = __tact_dict_get_code(source, 55471);
-    contracts = __tact_dict_set_code(contracts, 55471, mine);
-    
-    ;; Build cell
-    builder b = begin_cell();
-    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
-    b = b.store_int(false, 1);
-    b = $JettonDefaultWallet$init$_store(b, ($master, $owner));
     return (mine, b.end_cell());
 }
 
