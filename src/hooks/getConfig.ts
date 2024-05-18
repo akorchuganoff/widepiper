@@ -4,7 +4,7 @@ export function getConfig():{
     minterAddress: string
 } {
 
-    const accountManagerAddress = "EQDevWWOYKZlJadLWa-9kQzJmuOJw3P6aE5CRCnvncy_8tfJ"
+    const accountManagerAddress = "EQDSuOUZ9xbxI4HjhtvMrw5nBQRJrc1vaDG1WAsqrKzFQZfg"
     const minterAddress         = "EQD763bQ9c4DWuhjmF6Otx__NZST5i20VMG_j3qZ68KjPlAd"
 
     return {

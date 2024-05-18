@@ -69,7 +69,7 @@
 
 ((slice, slice, slice, int, int, int, int, int), ()) $Bet$_internal_text_531da2ca3f940d771348917c00879aeea3ceccbce2bda18fe3b8f6f93dbbd10e((slice, slice, slice, int, int, int, int, int) $self) impure inline {
     var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
-    $global_send($SendParameters$_constructor_to_value_mode_bounce(__gen_slice_address_e4ae6ca17e77fe6abf6651d4ae45b3266e356c9d322ca1f7a28fc6f1d7af9925(), 0, (128 + 2), true));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce(__gen_slice_address_a9252bcc86aa3f1ad3837b1caf19334cb58264d434d92c8d0b3a69a5760c8ab0(), 0, (128 + 2), true));
     return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
 }
 

@@ -10,7 +10,7 @@ const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, tim
 export function useAdminWallet() {
     const {client} = useTonClient()
 
-    const mnemonic = "fantasy song lab false catalog crater lift romance mistake glass galaxy alcohol inform olive ensure exercise mushroom crop behave rescue nasty brass vintage scrub";
+    const mnemonic = "total dutch lawsuit twin best angry primary merge trouble unfair story uniform belt find wolf truck sleep giant ketchup guilt brick work brain clay";
 
     const key = useAsyncInitialize(async()=>{
 

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: Bet
-BOC Size: 1726 bytes
+BOC Size: 1521 bytes
 
 # Types
 Total Types: 20
@@ -41,49 +41,49 @@ Signature: `ChangeOwnerOk{queryId:uint64,newOwner:address}`
 TLB: `create_new_block#fcf92756 course:coins = CreateNewBlock`
 Signature: `CreateNewBlock{course:coins}`
 
-## Win
-TLB: `win#0a6b1739  = Win`
-Signature: `Win{}`
-
-## Lose
-TLB: `lose#33aa6bd5  = Lose`
-Signature: `Lose{}`
-
 ## ApplyBetMessage
-TLB: `apply_bet_message#7fb9a5d3 owner:address rounds_count:uint16 delta_r:coins bet_ammount:coins prev_bet_seqno:uint256 prev_bet_odd_flag:bool = ApplyBetMessage`
-Signature: `ApplyBetMessage{owner:address,rounds_count:uint16,delta_r:coins,bet_ammount:coins,prev_bet_seqno:uint256,prev_bet_odd_flag:bool}`
+TLB: `apply_bet_message#fdf96f4e account_manager:address owner:address bet_amount:coins delta_r:coins seqno:uint256 odd_flag:bool is_negative:bool = ApplyBetMessage`
+Signature: `ApplyBetMessage{account_manager:address,owner:address,bet_amount:coins,delta_r:coins,seqno:uint256,odd_flag:bool,is_negative:bool}`
 
 ## BetData
-TLB: `_ accountManager:address owner:address seqno:uint256 odd_flag:bool rounds_count:uint16 delta_r:coins bet_amount:coins = BetData`
-Signature: `BetData{accountManager:address,owner:address,seqno:uint256,odd_flag:bool,rounds_count:uint16,delta_r:coins,bet_amount:coins}`
+TLB: `_ accountManager:address owner:address checkbook:address seqno:uint256 odd_flag:bool delta_r:coins bet_amount:coins is_negative:bool = BetData`
+Signature: `BetData{accountManager:address,owner:address,checkbook:address,seqno:uint256,odd_flag:bool,delta_r:coins,bet_amount:coins,is_negative:bool}`
 
 ## SetBetInfo
-TLB: `set_bet_info#3828f5c3 owner_ton_wallet:address rounds_count:uint16 delta_r:coins = SetBetInfo`
-Signature: `SetBetInfo{owner_ton_wallet:address,rounds_count:uint16,delta_r:coins}`
+TLB: `set_bet_info#ff12dab2 owner:address ton_check_book:address delta_r:coins balance:coins is_negative:bool = SetBetInfo`
+Signature: `SetBetInfo{owner:address,ton_check_book:address,delta_r:coins,balance:coins,is_negative:bool}`
 
 ## GetBetInfo
 TLB: `get_bet_info#91a1d1e2  = GetBetInfo`
 Signature: `GetBetInfo{}`
 
 ## ProcessBetInfo
-TLB: `process_bet_info#4802fa2b accountManager:address owner:address seqno:uint256 odd_flag:bool rounds_count:uint16 delta_r:coins bet_amount:coins = ProcessBetInfo`
-Signature: `ProcessBetInfo{accountManager:address,owner:address,seqno:uint256,odd_flag:bool,rounds_count:uint16,delta_r:coins,bet_amount:coins}`
+TLB: `process_bet_info#489cac3e accountManager:address owner:address seqno:uint256 odd_flag:bool delta_r:coins bet_amount:coins is_negative:bool = ProcessBetInfo`
+Signature: `ProcessBetInfo{accountManager:address,owner:address,seqno:uint256,odd_flag:bool,delta_r:coins,bet_amount:coins,is_negative:bool}`
 
-## BetWinMessage
-TLB: `bet_win_message#75c76e5a amount:coins owner_ton_wallet:address = BetWinMessage`
-Signature: `BetWinMessage{amount:coins,owner_ton_wallet:address}`
-
-## PayBet
-TLB: `pay_bet#72d947fa bet_address:address amount:coins = PayBet`
-Signature: `PayBet{bet_address:address,amount:coins}`
+## InternalBetWinMessage
+TLB: `internal_bet_win_message#dea72f71 amount:coins owner_ton_wallet:address = InternalBetWinMessage`
+Signature: `InternalBetWinMessage{amount:coins,owner_ton_wallet:address}`
 
 ## Balance
 TLB: `balance#00ec6b43 balance:coins = Balance`
 Signature: `Balance{balance:coins}`
 
+## InitMinter
+TLB: `init_minter#42505fac content:^cell is_minter_present:bool minter_address:Maybe address = InitMinter`
+Signature: `InitMinter{content:^cell,is_minter_present:bool,minter_address:Maybe address}`
+
 ## Withdraw
 TLB: `withdraw#0ba69751 amount:coins = Withdraw`
 Signature: `Withdraw{amount:coins}`
+
+## IncrementCurrentBlockCount
+TLB: `increment_current_block_count#12ec415a seqno:uint256 odd_flag:bool = IncrementCurrentBlockCount`
+Signature: `IncrementCurrentBlockCount{seqno:uint256,odd_flag:bool}`
+
+## ProcessOldBlock
+TLB: `process_old_block#bd7ce6d4 median_delta_r:coins course:coins = ProcessOldBlock`
+Signature: `ProcessOldBlock{median_delta_r:coins,course:coins}`
 
 # Get Methods
 Total Get Methods: 3
@@ -119,6 +119,4 @@ Total Get Methods: 3
 135: Code of a contract was not found
 136: Invalid address
 137: Masterchain support is not enabled for this contract
-15518: Amount is too small
-26438: Only account manager
 48121: Only Account Manager

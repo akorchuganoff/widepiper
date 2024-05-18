@@ -15,6 +15,7 @@ import { useTonConnect } from "./useTonConnect";
 import { useAdminWallet } from "./adminWalletTransactionProcessing";
 
 import { getTonWalletInfo } from "./getTonWalletInfo";
+import { CHAIN } from "@tonconnect/protocol";
 
 import {
     Card,
@@ -24,14 +25,14 @@ import {
     Ellipsis,
 } from "../components/styled/styled";
 import { send } from "vite";
-import { trace } from "console";
+import { time, trace } from "console";
 // import internal from "stream";
 
 const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time))
 
 export function useAccountManagerContract() {
     const {client} = useTonClient()
-    const {wallet_address, sender} = useTonConnect()
+    const {wallet_address, sender, network} = useTonConnect()
     const { accountManagerAddress, minterAddress} = getConfig()
     const {admin_sender, admin_wallet_address, admin_wallet, send_text_message } = useAdminWallet()
     const [jettonBalance, setBalance] = useState<string | null>()
@@ -88,6 +89,8 @@ export function useAccountManagerContract() {
     }, [client, accountManagerContract, wallet_address])
     console.log(TonCheckBookContract)
 
+
+    
 
     useEffect(()=>{
         async function getBalance() {
@@ -301,17 +304,17 @@ export function useAccountManagerContract() {
                 user_delta *= -1
             }
 
-            // const response = await fetch("http://81.31.245.206:5000/user", {
-            //     method: "POST",
-            //     headers: {
-            //         'Content-Type': 'application/json' // Убедитесь, что используете этот заголовок
-            //     },
-            //     body: JSON.stringify({
-            //         "wallet_address": wallet_address!.toString(),
-            //         "round_amount": 1,
-            //         "delta_r": user_delta
-            //     })
-            // });
+            const response = await fetch("http://localhost:5000/user", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json' // Убедитесь, что используете этот заголовок
+                },
+                body: JSON.stringify({
+                    "wallet_address": wallet_address!.toString(),
+                    "round_amount": 1,
+                    "delta_r": user_delta
+                })
+            });
 
         },
 
@@ -341,6 +344,8 @@ export function useAccountManagerContract() {
             result_flag = false
             while (!result_flag) {
                 try {
+                    console.log(admin_sender);
+                    console.log(admin_wallet);
                     admin_sender!.send({
                         to: TonCheckBookContract!.address,
                         value: toNano("0.1"),
@@ -433,7 +438,9 @@ export function useAccountManagerContract() {
 
             if (!accountManagerContract) return;
 
-            let bet_amount = await accountManagerContract?.getMaxBetIdInApplyedBlock()
+            console.log(accountManagerContract)
+
+            let bet_amount = await accountManagerContract.getMaxBetIdInApplyedBlock()
             let old_course = await accountManagerContract.getOldBlockCourse()
             let new_course = await accountManagerContract.getNewBlockCourse()
 
@@ -460,14 +467,17 @@ export function useAccountManagerContract() {
 
             let messages = [];
 
+            
             let median_value = medianBigInt(deltas)
             if (median_value){
+                let bets_data = [];
                 console.log("Median mistake: ", fromNano(median_value!))
                 for (let i = 1n; i < bet_amount+1n; i++){
                     let bet_address = await accountManagerContract.getBetAddressBySeqnoInApplyedBlock(i)
                     let current_bet = client?.open(await Bet.fromAddress(bet_address!))
-                    let bet_data = current_bet?.getBetData()
-                    let delta = Number((await bet_data!).delta_r);
+                    let bet_data = await current_bet?.getBetData()
+                    
+                    let delta = Number(bet_data!.delta_r);
 
                     let mistake = abs(BigInt(Number(oracul_delta) - Number(delta)));
 
@@ -480,6 +490,19 @@ export function useAccountManagerContract() {
                         })]
                         messages.push(cur_message)
                         console.log("Bet Win: ", bet_address.toString(), " Mistake: ", fromNano(mistake))
+                        bets_data.push(
+                            {
+                                'accountManager': bet_data!.accountManager.toString(),
+                                'owner': bet_data!.owner.toString(),
+                                'checkbook': bet_data!.checkbook.toString(),
+                                'seqno': Number(bet_data!.seqno),
+                                'odd_flag': bet_data!.odd_flag,
+                                'delta_r': Number(bet_data!.delta_r),
+                                'bet_amount': Number(bet_data!.bet_amount),
+                                'is_negative': bet_data!.is_negative,
+                                'status': 'win'
+                            }
+                        )
                     } else {
                         let cur_message = [internal({
                             to: bet_address,
@@ -489,8 +512,32 @@ export function useAccountManagerContract() {
                         })]
                         messages.push(cur_message)
                         console.log("Bet Loose: ", bet_address.toString(), " Mistake: ", fromNano(mistake))
+                        bets_data.push(
+                            {
+                                'accountManager': bet_data!.accountManager.toString(),
+                                'owner': bet_data!.owner.toString(),
+                                'checkbook': bet_data!.checkbook.toString(),
+                                'seqno': Number(bet_data!.seqno),
+                                'odd_flag': bet_data!.odd_flag,
+                                'delta_r': Number(bet_data!.delta_r),
+                                'bet_amount': Number(bet_data!.bet_amount),
+                                'is_negative': bet_data!.is_negative,
+                                'status': 'lose'
+                            }
+                        )
                     }
                 }
+
+                await fetch("http://localhost:5000/add_bets", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json' // Убедитесь, что используете этот заголовок
+                    },
+                    body: JSON.stringify({
+                        "bets": bets_data,
+                        "network": network === CHAIN.MAINNET ? "mainnet" : "testnet",
+                    })
+                })
 
             } else {
                 console.log("Median mistake: none. No bets in prev block")
@@ -547,14 +594,14 @@ export function useAccountManagerContract() {
 
 
             // Update db
-            await fetch("http://81.31.245.206:5000/create_block", {
+            await fetch("http://localhost:5000/create_block", {
                 method: "POST"
             })
 
             await sleep(20000)
 
             // Apply Auto bets
-            await fetch("http://81.31.245.206:5000/users", {
+            await fetch("http://localhost:5000/users", {
                     method: "GET",
                 }).then(response => response.json()).then(async users =>{
                     for (const user of users) {
@@ -648,7 +695,7 @@ export function useAccountManagerContract() {
 
 
             // Decision from DB
-            let url = new URL("http://81.31.245.206:5000/make_decision")
+            let url = new URL("http://localhost:5000/make_decision")
             url.searchParams.append("course_delta", Number(new_course - old_course).toString())
             await fetch(url.toString(), {
                 method: "GET",

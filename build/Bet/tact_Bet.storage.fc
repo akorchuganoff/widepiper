@@ -18,8 +18,16 @@
     return (bounce, to, value, mode, body, code, data);
 }
 
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_bounce_mode_body(slice to, int value, int bounce, int mode, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
+}
+
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
     return (bounce, to, value, mode, body, null(), null());
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce(slice to, int value, int mode, int bounce) inline {
+    return (bounce, to, value, mode, null(), null(), null());
 }
 
 ;;
@@ -56,109 +64,52 @@ cell $DeployOk$_store_cell((int) v) inline {
 }
 
 ;;
-;; Type: Win
-;; Header: 0x0a6b1739
-;; TLB: win#0a6b1739  = Win
-;;
-
-(slice, (tuple)) $Win$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 174790457);
-    return (sc_0, null());
-}
-
-;;
-;; Type: Lose
-;; Header: 0x33aa6bd5
-;; TLB: lose#33aa6bd5  = Lose
-;;
-
-(slice, (tuple)) $Lose$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 866806741);
-    return (sc_0, null());
-}
-
-;;
-;; Type: ApplyBetMessage
-;; Header: 0x7fb9a5d3
-;; TLB: apply_bet_message#7fb9a5d3 owner:address rounds_count:uint16 delta_r:coins bet_ammount:coins prev_bet_seqno:uint256 prev_bet_odd_flag:bool = ApplyBetMessage
-;;
-
-builder $ApplyBetMessage$_store(builder build_0, (slice, int, int, int, int, int) v) inline_ref {
-    var (v'owner, v'rounds_count, v'delta_r, v'bet_ammount, v'prev_bet_seqno, v'prev_bet_odd_flag) = v;
-    build_0 = store_uint(build_0, 2142873043, 32);
-    build_0 = __tact_store_address(build_0, v'owner);
-    build_0 = build_0.store_uint(v'rounds_count, 16);
-    build_0 = build_0.store_coins(v'delta_r);
-    build_0 = build_0.store_coins(v'bet_ammount);
-    build_0 = build_0.store_uint(v'prev_bet_seqno, 256);
-    build_0 = build_0.store_int(v'prev_bet_odd_flag, 1);
-    return build_0;
-}
-
-cell $ApplyBetMessage$_store_cell((slice, int, int, int, int, int) v) inline {
-    return $ApplyBetMessage$_store(begin_cell(), v).end_cell();
-}
-
-((slice, int, int, int, int, int)) $ApplyBetMessage$_constructor_owner_rounds_count_delta_r_bet_ammount_prev_bet_seqno_prev_bet_odd_flag(slice owner, int rounds_count, int delta_r, int bet_ammount, int prev_bet_seqno, int prev_bet_odd_flag) inline {
-    return (owner, rounds_count, delta_r, bet_ammount, prev_bet_seqno, prev_bet_odd_flag);
-}
-
-;;
 ;; Type: BetData
-;; TLB: _ accountManager:address owner:address seqno:uint256 odd_flag:bool rounds_count:uint16 delta_r:coins bet_amount:coins = BetData
+;; TLB: _ accountManager:address owner:address checkbook:address seqno:uint256 odd_flag:bool delta_r:coins bet_amount:coins is_negative:bool = BetData
 ;;
 
-(slice, slice, int, int, int, int, int) $BetData$_to_external(((slice, slice, int, int, int, int, int)) v) inline {
-    var (v'accountManager, v'owner, v'seqno, v'odd_flag, v'rounds_count, v'delta_r, v'bet_amount) = v; 
-    return (v'accountManager, v'owner, v'seqno, v'odd_flag, v'rounds_count, v'delta_r, v'bet_amount);
+(slice, slice, slice, int, int, int, int, int) $BetData$_to_external(((slice, slice, slice, int, int, int, int, int)) v) inline {
+    var (v'accountManager, v'owner, v'checkbook, v'seqno, v'odd_flag, v'delta_r, v'bet_amount, v'is_negative) = v; 
+    return (v'accountManager, v'owner, v'checkbook, v'seqno, v'odd_flag, v'delta_r, v'bet_amount, v'is_negative);
 }
 
-((slice, slice, int, int, int, int, int)) $BetData$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount(slice accountManager, slice owner, int seqno, int odd_flag, int rounds_count, int delta_r, int bet_amount) inline {
-    return (accountManager, owner, seqno, odd_flag, rounds_count, delta_r, bet_amount);
+((slice, slice, slice, int, int, int, int, int)) $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount_is_negative(slice accountManager, slice owner, slice checkbook, int seqno, int odd_flag, int delta_r, int bet_amount, int is_negative) inline {
+    return (accountManager, owner, checkbook, seqno, odd_flag, delta_r, bet_amount, is_negative);
 }
 
 ;;
 ;; Type: SetBetInfo
-;; Header: 0x3828f5c3
-;; TLB: set_bet_info#3828f5c3 owner_ton_wallet:address rounds_count:uint16 delta_r:coins = SetBetInfo
+;; Header: 0xff12dab2
+;; TLB: set_bet_info#ff12dab2 owner:address ton_check_book:address delta_r:coins balance:coins is_negative:bool = SetBetInfo
 ;;
 
-(slice, ((slice, int, int))) $SetBetInfo$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 942208451);
-    var v'owner_ton_wallet = sc_0~__tact_load_address();
-    var v'rounds_count = sc_0~load_uint(16);
+(slice, ((slice, slice, int, int, int))) $SetBetInfo$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 4279425714);
+    var v'owner = sc_0~__tact_load_address();
+    var v'ton_check_book = sc_0~__tact_load_address();
     var v'delta_r = sc_0~load_coins();
-    return (sc_0, (v'owner_ton_wallet, v'rounds_count, v'delta_r));
-}
-
-;;
-;; Type: GetBetInfo
-;; Header: 0x91a1d1e2
-;; TLB: get_bet_info#91a1d1e2  = GetBetInfo
-;;
-
-(slice, (tuple)) $GetBetInfo$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 2443301346);
-    return (sc_0, null());
+    var v'balance = sc_0~load_coins();
+    var v'is_negative = sc_0~load_int(1);
+    return (sc_0, (v'owner, v'ton_check_book, v'delta_r, v'balance, v'is_negative));
 }
 
 ;;
 ;; Type: ProcessBetInfo
-;; Header: 0x4802fa2b
-;; TLB: process_bet_info#4802fa2b accountManager:address owner:address seqno:uint256 odd_flag:bool rounds_count:uint16 delta_r:coins bet_amount:coins = ProcessBetInfo
+;; Header: 0x489cac3e
+;; TLB: process_bet_info#489cac3e accountManager:address owner:address seqno:uint256 odd_flag:bool delta_r:coins bet_amount:coins is_negative:bool = ProcessBetInfo
 ;;
 
 builder $ProcessBetInfo$_store(builder build_0, (slice, slice, int, int, int, int, int) v) inline_ref {
-    var (v'accountManager, v'owner, v'seqno, v'odd_flag, v'rounds_count, v'delta_r, v'bet_amount) = v;
-    build_0 = store_uint(build_0, 1208154667, 32);
+    var (v'accountManager, v'owner, v'seqno, v'odd_flag, v'delta_r, v'bet_amount, v'is_negative) = v;
+    build_0 = store_uint(build_0, 1218227262, 32);
     build_0 = __tact_store_address(build_0, v'accountManager);
     build_0 = __tact_store_address(build_0, v'owner);
     build_0 = build_0.store_uint(v'seqno, 256);
     build_0 = build_0.store_int(v'odd_flag, 1);
-    build_0 = build_0.store_uint(v'rounds_count, 16);
     build_0 = build_0.store_coins(v'delta_r);
     var build_1 = begin_cell();
     build_1 = build_1.store_coins(v'bet_amount);
+    build_1 = build_1.store_int(v'is_negative, 1);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
@@ -167,88 +118,84 @@ cell $ProcessBetInfo$_store_cell((slice, slice, int, int, int, int, int) v) inli
     return $ProcessBetInfo$_store(begin_cell(), v).end_cell();
 }
 
-((slice, slice, int, int, int, int, int)) $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount(slice accountManager, slice owner, int seqno, int odd_flag, int rounds_count, int delta_r, int bet_amount) inline {
-    return (accountManager, owner, seqno, odd_flag, rounds_count, delta_r, bet_amount);
+((slice, slice, int, int, int, int, int)) $ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount_is_negative(slice accountManager, slice owner, int seqno, int odd_flag, int delta_r, int bet_amount, int is_negative) inline {
+    return (accountManager, owner, seqno, odd_flag, delta_r, bet_amount, is_negative);
 }
 
 ;;
-;; Type: BetWinMessage
-;; Header: 0x75c76e5a
-;; TLB: bet_win_message#75c76e5a amount:coins owner_ton_wallet:address = BetWinMessage
+;; Type: InternalBetWinMessage
+;; Header: 0xdea72f71
+;; TLB: internal_bet_win_message#dea72f71 amount:coins owner_ton_wallet:address = InternalBetWinMessage
 ;;
 
-builder $BetWinMessage$_store(builder build_0, (int, slice) v) inline {
+builder $InternalBetWinMessage$_store(builder build_0, (int, slice) v) inline {
     var (v'amount, v'owner_ton_wallet) = v;
-    build_0 = store_uint(build_0, 1976004186, 32);
+    build_0 = store_uint(build_0, 3735498609, 32);
     build_0 = build_0.store_coins(v'amount);
     build_0 = __tact_store_address(build_0, v'owner_ton_wallet);
     return build_0;
 }
 
-cell $BetWinMessage$_store_cell((int, slice) v) inline {
-    return $BetWinMessage$_store(begin_cell(), v).end_cell();
+cell $InternalBetWinMessage$_store_cell((int, slice) v) inline {
+    return $InternalBetWinMessage$_store(begin_cell(), v).end_cell();
 }
 
-((int, slice)) $BetWinMessage$_constructor_amount_owner_ton_wallet(int amount, slice owner_ton_wallet) inline {
+((int, slice)) $InternalBetWinMessage$_constructor_amount_owner_ton_wallet(int amount, slice owner_ton_wallet) inline {
     return (amount, owner_ton_wallet);
 }
 
 ;;
-;; Type: TONCheckBook
+;; Type: IncrementCurrentBlockCount
+;; Header: 0x12ec415a
+;; TLB: increment_current_block_count#12ec415a seqno:uint256 odd_flag:bool = IncrementCurrentBlockCount
 ;;
 
-builder $TONCheckBook$init$_store(builder build_0, (slice, slice) v) inline {
-    var (v'accountManager, v'owner) = v;
-    build_0 = __tact_store_address(build_0, v'accountManager);
-    build_0 = __tact_store_address(build_0, v'owner);
+builder $IncrementCurrentBlockCount$_store(builder build_0, (int, int) v) inline {
+    var (v'seqno, v'odd_flag) = v;
+    build_0 = store_uint(build_0, 317473114, 32);
+    build_0 = build_0.store_uint(v'seqno, 256);
+    build_0 = build_0.store_int(v'odd_flag, 1);
     return build_0;
 }
 
-(cell, cell) $TONCheckBook$_init_child(cell sys', slice $accountManager, slice $owner) inline_ref {
-    slice sc' = sys'.begin_parse();
-    cell source = sc'~load_dict();
-    cell contracts = new_dict();
-    
-    ;; Contract Code: TONCheckBook
-    cell mine = __tact_dict_get_code(source, 56866);
-    contracts = __tact_dict_set_code(contracts, 56866, mine);
-    
-    ;; Build cell
-    builder b = begin_cell();
-    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
-    b = b.store_int(false, 1);
-    b = $TONCheckBook$init$_store(b, ($accountManager, $owner));
-    return (mine, b.end_cell());
+cell $IncrementCurrentBlockCount$_store_cell((int, int) v) inline {
+    return $IncrementCurrentBlockCount$_store(begin_cell(), v).end_cell();
+}
+
+((int, int)) $IncrementCurrentBlockCount$_constructor_seqno_odd_flag(int seqno, int odd_flag) inline {
+    return (seqno, odd_flag);
 }
 
 ;;
 ;; Type: Bet
 ;;
 
-builder $Bet$_store(builder build_0, (slice, slice, int, int, int, int, int) v) inline {
-    var (v'accountManager, v'owner_ton_wallet, v'seqno, v'odd_flag, v'rounds_count, v'delta_r, v'balance) = v;
+builder $Bet$_store(builder build_0, (slice, slice, slice, int, int, int, int, int) v) inline {
+    var (v'accountManager, v'owner_ton_wallet, v'ton_check_book, v'seqno, v'odd_flag, v'delta_r, v'balance, v'is_negative) = v;
     build_0 = __tact_store_address(build_0, v'accountManager);
     build_0 = __tact_store_address(build_0, v'owner_ton_wallet);
-    build_0 = build_0.store_uint(v'seqno, 256);
-    build_0 = build_0.store_int(v'odd_flag, 1);
-    build_0 = build_0.store_uint(v'rounds_count, 16);
-    build_0 = build_0.store_coins(v'delta_r);
+    build_0 = __tact_store_address(build_0, v'ton_check_book);
     var build_1 = begin_cell();
+    build_1 = build_1.store_uint(v'seqno, 256);
+    build_1 = build_1.store_int(v'odd_flag, 1);
+    build_1 = build_1.store_coins(v'delta_r);
     build_1 = build_1.store_coins(v'balance);
+    build_1 = build_1.store_int(v'is_negative, 1);
     build_0 = store_ref(build_0, build_1.end_cell());
     return build_0;
 }
 
-(slice, ((slice, slice, int, int, int, int, int))) $Bet$_load(slice sc_0) inline {
+(slice, ((slice, slice, slice, int, int, int, int, int))) $Bet$_load(slice sc_0) inline {
     var v'accountManager = sc_0~__tact_load_address();
     var v'owner_ton_wallet = sc_0~__tact_load_address();
-    var v'seqno = sc_0~load_uint(256);
-    var v'odd_flag = sc_0~load_int(1);
-    var v'rounds_count = sc_0~load_uint(16);
-    var v'delta_r = sc_0~load_coins();
+    var v'ton_check_book = sc_0~__tact_load_address();
     slice sc_1 = sc_0~load_ref().begin_parse();
+    var v'seqno = sc_1~load_uint(256);
+    var v'odd_flag = sc_1~load_int(1);
+    var v'delta_r = sc_1~load_coins();
     var v'balance = sc_1~load_coins();
-    return (sc_0, (v'accountManager, v'owner_ton_wallet, v'seqno, v'odd_flag, v'rounds_count, v'delta_r, v'balance));
+    var v'is_negative = sc_1~load_int(1);
+    return (sc_0, (v'accountManager, v'owner_ton_wallet, v'ton_check_book, v'seqno, v'odd_flag, v'delta_r, v'balance, v'is_negative));
 }
 
 (slice, ((slice, int, int))) $Bet$init$_load(slice sc_0) inline {
@@ -258,7 +205,7 @@ builder $Bet$_store(builder build_0, (slice, slice, int, int, int, int, int) v) 
     return (sc_0, (v'accountManager, v'seqno, v'odd_flag));
 }
 
-(slice, slice, int, int, int, int, int) $Bet$_contract_load() impure inline_ref {
+(slice, slice, slice, int, int, int, int, int) $Bet$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
@@ -273,7 +220,7 @@ builder $Bet$_store(builder build_0, (slice, slice, int, int, int, int, int) v) 
     }
 }
 
-() $Bet$_contract_store((slice, slice, int, int, int, int, int) v) impure inline {
+() $Bet$_contract_store((slice, slice, slice, int, int, int, int, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);

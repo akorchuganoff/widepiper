@@ -167,6 +167,13 @@
     return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
 }
 
+((slice, slice, int, int, int, int, int, int, int, int, int), ()) $AccountManager$_internal_text_250b76e2b9576fc6b4c45129483006b0003a0c39b6f7ae413d177f4e3479dbca((slice, slice, int, int, int, int, int, int, int, int, int) $self) impure inline {
+    var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
+    ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag)~$AccountManager$_fun_requireOwner();
+    $global_send($SendParameters$_constructor_to_value_mode_bounce($self'owner, 0, (128 + 2), true));
+    return (($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag), ());
+}
+
 (((slice, slice, int, int, int, int, int, int, int, int, int)), ()) $AccountManager$_internal_binary_CreateNewBlock((slice, slice, int, int, int, int, int, int, int, int, int) $self, (int) $msg) impure inline {
     var ($self'owner, $self'minter, $self'old_bet_counter, $self'new_bet_counter, $self'old_block_course, $self'new_block_course, $self'median_delta_r, $self'sum_delta_r, $self'first_time_flag, $self'current_index, $self'odd_flag) = $self;
     var ($msg'course) = $msg;
@@ -283,7 +290,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmXJ8vEUUabZWXxdesBQsAxS4hqUFEYSsTjP7kjGs534ww";
+    return "ipfs://QmT7nZJH5XGmh1wxog6Uu76yxqYPPk21LZHw6dTdVYNin1";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -369,6 +376,12 @@ _ lazy_deployment_completed() method_id {
         ;; Receive "Transfer to admin" message
         if (text_op == 0xeae3eec1fc17be1459b1ae03cb9234d8cd2f5efb02ac427886ae263bba8ce15f) {
             self~$AccountManager$_internal_text_eae3eec1fc17be1459b1ae03cb9234d8cd2f5efb02ac427886ae263bba8ce15f();
+            return (self, true);
+        }
+        
+        ;; Receive "Withdraw" message
+        if (text_op == 0x250b76e2b9576fc6b4c45129483006b0003a0c39b6f7ae413d177f4e3479dbca) {
+            self~$AccountManager$_internal_text_250b76e2b9576fc6b4c45129483006b0003a0c39b6f7ae413d177f4e3479dbca();
             return (self, true);
         }
     }

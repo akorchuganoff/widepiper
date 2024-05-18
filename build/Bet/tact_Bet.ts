@@ -457,133 +457,67 @@ function dictValueParserCreateNewBlock(): DictionaryValue<CreateNewBlock> {
     }
 }
 
-export type Win = {
-    $$type: 'Win';
-}
-
-export function storeWin(src: Win) {
-    return (builder: Builder) => {
-        let b_0 = builder;
-        b_0.storeUint(174790457, 32);
-    };
-}
-
-export function loadWin(slice: Slice) {
-    let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 174790457) { throw Error('Invalid prefix'); }
-    return { $$type: 'Win' as const };
-}
-
-function loadTupleWin(source: TupleReader) {
-    return { $$type: 'Win' as const };
-}
-
-function storeTupleWin(source: Win) {
-    let builder = new TupleBuilder();
-    return builder.build();
-}
-
-function dictValueParserWin(): DictionaryValue<Win> {
-    return {
-        serialize: (src, buidler) => {
-            buidler.storeRef(beginCell().store(storeWin(src)).endCell());
-        },
-        parse: (src) => {
-            return loadWin(src.loadRef().beginParse());
-        }
-    }
-}
-
-export type Lose = {
-    $$type: 'Lose';
-}
-
-export function storeLose(src: Lose) {
-    return (builder: Builder) => {
-        let b_0 = builder;
-        b_0.storeUint(866806741, 32);
-    };
-}
-
-export function loadLose(slice: Slice) {
-    let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 866806741) { throw Error('Invalid prefix'); }
-    return { $$type: 'Lose' as const };
-}
-
-function loadTupleLose(source: TupleReader) {
-    return { $$type: 'Lose' as const };
-}
-
-function storeTupleLose(source: Lose) {
-    let builder = new TupleBuilder();
-    return builder.build();
-}
-
-function dictValueParserLose(): DictionaryValue<Lose> {
-    return {
-        serialize: (src, buidler) => {
-            buidler.storeRef(beginCell().store(storeLose(src)).endCell());
-        },
-        parse: (src) => {
-            return loadLose(src.loadRef().beginParse());
-        }
-    }
-}
-
 export type ApplyBetMessage = {
     $$type: 'ApplyBetMessage';
+    account_manager: Address;
     owner: Address;
-    rounds_count: bigint;
+    bet_amount: bigint;
     delta_r: bigint;
-    bet_ammount: bigint;
-    prev_bet_seqno: bigint;
-    prev_bet_odd_flag: boolean;
+    seqno: bigint;
+    odd_flag: boolean;
+    is_negative: boolean;
 }
 
 export function storeApplyBetMessage(src: ApplyBetMessage) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(2142873043, 32);
+        b_0.storeUint(4260982606, 32);
+        b_0.storeAddress(src.account_manager);
         b_0.storeAddress(src.owner);
-        b_0.storeUint(src.rounds_count, 16);
+        b_0.storeCoins(src.bet_amount);
         b_0.storeCoins(src.delta_r);
-        b_0.storeCoins(src.bet_ammount);
-        b_0.storeUint(src.prev_bet_seqno, 256);
-        b_0.storeBit(src.prev_bet_odd_flag);
+        let b_1 = new Builder();
+        b_1.storeUint(src.seqno, 256);
+        b_1.storeBit(src.odd_flag);
+        b_1.storeBit(src.is_negative);
+        b_0.storeRef(b_1.endCell());
     };
 }
 
 export function loadApplyBetMessage(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 2142873043) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 4260982606) { throw Error('Invalid prefix'); }
+    let _account_manager = sc_0.loadAddress();
     let _owner = sc_0.loadAddress();
-    let _rounds_count = sc_0.loadUintBig(16);
+    let _bet_amount = sc_0.loadCoins();
     let _delta_r = sc_0.loadCoins();
-    let _bet_ammount = sc_0.loadCoins();
-    let _prev_bet_seqno = sc_0.loadUintBig(256);
-    let _prev_bet_odd_flag = sc_0.loadBit();
-    return { $$type: 'ApplyBetMessage' as const, owner: _owner, rounds_count: _rounds_count, delta_r: _delta_r, bet_ammount: _bet_ammount, prev_bet_seqno: _prev_bet_seqno, prev_bet_odd_flag: _prev_bet_odd_flag };
+    let sc_1 = sc_0.loadRef().beginParse();
+    let _seqno = sc_1.loadUintBig(256);
+    let _odd_flag = sc_1.loadBit();
+    let _is_negative = sc_1.loadBit();
+    return { $$type: 'ApplyBetMessage' as const, account_manager: _account_manager, owner: _owner, bet_amount: _bet_amount, delta_r: _delta_r, seqno: _seqno, odd_flag: _odd_flag, is_negative: _is_negative };
 }
 
 function loadTupleApplyBetMessage(source: TupleReader) {
+    let _account_manager = source.readAddress();
     let _owner = source.readAddress();
-    let _rounds_count = source.readBigNumber();
+    let _bet_amount = source.readBigNumber();
     let _delta_r = source.readBigNumber();
-    let _bet_ammount = source.readBigNumber();
-    let _prev_bet_seqno = source.readBigNumber();
-    let _prev_bet_odd_flag = source.readBoolean();
-    return { $$type: 'ApplyBetMessage' as const, owner: _owner, rounds_count: _rounds_count, delta_r: _delta_r, bet_ammount: _bet_ammount, prev_bet_seqno: _prev_bet_seqno, prev_bet_odd_flag: _prev_bet_odd_flag };
+    let _seqno = source.readBigNumber();
+    let _odd_flag = source.readBoolean();
+    let _is_negative = source.readBoolean();
+    return { $$type: 'ApplyBetMessage' as const, account_manager: _account_manager, owner: _owner, bet_amount: _bet_amount, delta_r: _delta_r, seqno: _seqno, odd_flag: _odd_flag, is_negative: _is_negative };
 }
 
 function storeTupleApplyBetMessage(source: ApplyBetMessage) {
     let builder = new TupleBuilder();
+    builder.writeAddress(source.account_manager);
     builder.writeAddress(source.owner);
-    builder.writeNumber(source.rounds_count);
+    builder.writeNumber(source.bet_amount);
     builder.writeNumber(source.delta_r);
-    builder.writeNumber(source.bet_ammount);
-    builder.writeNumber(source.prev_bet_seqno);
-    builder.writeBoolean(source.prev_bet_odd_flag);
+    builder.writeNumber(source.seqno);
+    builder.writeBoolean(source.odd_flag);
+    builder.writeBoolean(source.is_negative);
     return builder.build();
 }
 
@@ -602,11 +536,12 @@ export type BetData = {
     $$type: 'BetData';
     accountManager: Address;
     owner: Address;
+    checkbook: Address;
     seqno: bigint;
     odd_flag: boolean;
-    rounds_count: bigint;
     delta_r: bigint;
     bet_amount: bigint;
+    is_negative: boolean;
 }
 
 export function storeBetData(src: BetData) {
@@ -614,12 +549,13 @@ export function storeBetData(src: BetData) {
         let b_0 = builder;
         b_0.storeAddress(src.accountManager);
         b_0.storeAddress(src.owner);
-        b_0.storeUint(src.seqno, 256);
-        b_0.storeBit(src.odd_flag);
-        b_0.storeUint(src.rounds_count, 16);
-        b_0.storeCoins(src.delta_r);
+        b_0.storeAddress(src.checkbook);
         let b_1 = new Builder();
+        b_1.storeUint(src.seqno, 256);
+        b_1.storeBit(src.odd_flag);
+        b_1.storeCoins(src.delta_r);
         b_1.storeCoins(src.bet_amount);
+        b_1.storeBit(src.is_negative);
         b_0.storeRef(b_1.endCell());
     };
 }
@@ -628,35 +564,38 @@ export function loadBetData(slice: Slice) {
     let sc_0 = slice;
     let _accountManager = sc_0.loadAddress();
     let _owner = sc_0.loadAddress();
-    let _seqno = sc_0.loadUintBig(256);
-    let _odd_flag = sc_0.loadBit();
-    let _rounds_count = sc_0.loadUintBig(16);
-    let _delta_r = sc_0.loadCoins();
+    let _checkbook = sc_0.loadAddress();
     let sc_1 = sc_0.loadRef().beginParse();
+    let _seqno = sc_1.loadUintBig(256);
+    let _odd_flag = sc_1.loadBit();
+    let _delta_r = sc_1.loadCoins();
     let _bet_amount = sc_1.loadCoins();
-    return { $$type: 'BetData' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, rounds_count: _rounds_count, delta_r: _delta_r, bet_amount: _bet_amount };
+    let _is_negative = sc_1.loadBit();
+    return { $$type: 'BetData' as const, accountManager: _accountManager, owner: _owner, checkbook: _checkbook, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount, is_negative: _is_negative };
 }
 
 function loadTupleBetData(source: TupleReader) {
     let _accountManager = source.readAddress();
     let _owner = source.readAddress();
+    let _checkbook = source.readAddress();
     let _seqno = source.readBigNumber();
     let _odd_flag = source.readBoolean();
-    let _rounds_count = source.readBigNumber();
     let _delta_r = source.readBigNumber();
     let _bet_amount = source.readBigNumber();
-    return { $$type: 'BetData' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, rounds_count: _rounds_count, delta_r: _delta_r, bet_amount: _bet_amount };
+    let _is_negative = source.readBoolean();
+    return { $$type: 'BetData' as const, accountManager: _accountManager, owner: _owner, checkbook: _checkbook, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount, is_negative: _is_negative };
 }
 
 function storeTupleBetData(source: BetData) {
     let builder = new TupleBuilder();
     builder.writeAddress(source.accountManager);
     builder.writeAddress(source.owner);
+    builder.writeAddress(source.checkbook);
     builder.writeNumber(source.seqno);
     builder.writeBoolean(source.odd_flag);
-    builder.writeNumber(source.rounds_count);
     builder.writeNumber(source.delta_r);
     builder.writeNumber(source.bet_amount);
+    builder.writeBoolean(source.is_negative);
     return builder.build();
 }
 
@@ -673,42 +612,52 @@ function dictValueParserBetData(): DictionaryValue<BetData> {
 
 export type SetBetInfo = {
     $$type: 'SetBetInfo';
-    owner_ton_wallet: Address;
-    rounds_count: bigint;
+    owner: Address;
+    ton_check_book: Address;
     delta_r: bigint;
+    balance: bigint;
+    is_negative: boolean;
 }
 
 export function storeSetBetInfo(src: SetBetInfo) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(942208451, 32);
-        b_0.storeAddress(src.owner_ton_wallet);
-        b_0.storeUint(src.rounds_count, 16);
+        b_0.storeUint(4279425714, 32);
+        b_0.storeAddress(src.owner);
+        b_0.storeAddress(src.ton_check_book);
         b_0.storeCoins(src.delta_r);
+        b_0.storeCoins(src.balance);
+        b_0.storeBit(src.is_negative);
     };
 }
 
 export function loadSetBetInfo(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 942208451) { throw Error('Invalid prefix'); }
-    let _owner_ton_wallet = sc_0.loadAddress();
-    let _rounds_count = sc_0.loadUintBig(16);
+    if (sc_0.loadUint(32) !== 4279425714) { throw Error('Invalid prefix'); }
+    let _owner = sc_0.loadAddress();
+    let _ton_check_book = sc_0.loadAddress();
     let _delta_r = sc_0.loadCoins();
-    return { $$type: 'SetBetInfo' as const, owner_ton_wallet: _owner_ton_wallet, rounds_count: _rounds_count, delta_r: _delta_r };
+    let _balance = sc_0.loadCoins();
+    let _is_negative = sc_0.loadBit();
+    return { $$type: 'SetBetInfo' as const, owner: _owner, ton_check_book: _ton_check_book, delta_r: _delta_r, balance: _balance, is_negative: _is_negative };
 }
 
 function loadTupleSetBetInfo(source: TupleReader) {
-    let _owner_ton_wallet = source.readAddress();
-    let _rounds_count = source.readBigNumber();
+    let _owner = source.readAddress();
+    let _ton_check_book = source.readAddress();
     let _delta_r = source.readBigNumber();
-    return { $$type: 'SetBetInfo' as const, owner_ton_wallet: _owner_ton_wallet, rounds_count: _rounds_count, delta_r: _delta_r };
+    let _balance = source.readBigNumber();
+    let _is_negative = source.readBoolean();
+    return { $$type: 'SetBetInfo' as const, owner: _owner, ton_check_book: _ton_check_book, delta_r: _delta_r, balance: _balance, is_negative: _is_negative };
 }
 
 function storeTupleSetBetInfo(source: SetBetInfo) {
     let builder = new TupleBuilder();
-    builder.writeAddress(source.owner_ton_wallet);
-    builder.writeNumber(source.rounds_count);
+    builder.writeAddress(source.owner);
+    builder.writeAddress(source.ton_check_book);
     builder.writeNumber(source.delta_r);
+    builder.writeNumber(source.balance);
+    builder.writeBoolean(source.is_negative);
     return builder.build();
 }
 
@@ -766,39 +715,39 @@ export type ProcessBetInfo = {
     owner: Address;
     seqno: bigint;
     odd_flag: boolean;
-    rounds_count: bigint;
     delta_r: bigint;
     bet_amount: bigint;
+    is_negative: boolean;
 }
 
 export function storeProcessBetInfo(src: ProcessBetInfo) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1208154667, 32);
+        b_0.storeUint(1218227262, 32);
         b_0.storeAddress(src.accountManager);
         b_0.storeAddress(src.owner);
         b_0.storeUint(src.seqno, 256);
         b_0.storeBit(src.odd_flag);
-        b_0.storeUint(src.rounds_count, 16);
         b_0.storeCoins(src.delta_r);
         let b_1 = new Builder();
         b_1.storeCoins(src.bet_amount);
+        b_1.storeBit(src.is_negative);
         b_0.storeRef(b_1.endCell());
     };
 }
 
 export function loadProcessBetInfo(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1208154667) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 1218227262) { throw Error('Invalid prefix'); }
     let _accountManager = sc_0.loadAddress();
     let _owner = sc_0.loadAddress();
     let _seqno = sc_0.loadUintBig(256);
     let _odd_flag = sc_0.loadBit();
-    let _rounds_count = sc_0.loadUintBig(16);
     let _delta_r = sc_0.loadCoins();
     let sc_1 = sc_0.loadRef().beginParse();
     let _bet_amount = sc_1.loadCoins();
-    return { $$type: 'ProcessBetInfo' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, rounds_count: _rounds_count, delta_r: _delta_r, bet_amount: _bet_amount };
+    let _is_negative = sc_1.loadBit();
+    return { $$type: 'ProcessBetInfo' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount, is_negative: _is_negative };
 }
 
 function loadTupleProcessBetInfo(source: TupleReader) {
@@ -806,10 +755,10 @@ function loadTupleProcessBetInfo(source: TupleReader) {
     let _owner = source.readAddress();
     let _seqno = source.readBigNumber();
     let _odd_flag = source.readBoolean();
-    let _rounds_count = source.readBigNumber();
     let _delta_r = source.readBigNumber();
     let _bet_amount = source.readBigNumber();
-    return { $$type: 'ProcessBetInfo' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, rounds_count: _rounds_count, delta_r: _delta_r, bet_amount: _bet_amount };
+    let _is_negative = source.readBoolean();
+    return { $$type: 'ProcessBetInfo' as const, accountManager: _accountManager, owner: _owner, seqno: _seqno, odd_flag: _odd_flag, delta_r: _delta_r, bet_amount: _bet_amount, is_negative: _is_negative };
 }
 
 function storeTupleProcessBetInfo(source: ProcessBetInfo) {
@@ -818,9 +767,9 @@ function storeTupleProcessBetInfo(source: ProcessBetInfo) {
     builder.writeAddress(source.owner);
     builder.writeNumber(source.seqno);
     builder.writeBoolean(source.odd_flag);
-    builder.writeNumber(source.rounds_count);
     builder.writeNumber(source.delta_r);
     builder.writeNumber(source.bet_amount);
+    builder.writeBoolean(source.is_negative);
     return builder.build();
 }
 
@@ -835,96 +784,49 @@ function dictValueParserProcessBetInfo(): DictionaryValue<ProcessBetInfo> {
     }
 }
 
-export type BetWinMessage = {
-    $$type: 'BetWinMessage';
+export type InternalBetWinMessage = {
+    $$type: 'InternalBetWinMessage';
     amount: bigint;
     owner_ton_wallet: Address;
 }
 
-export function storeBetWinMessage(src: BetWinMessage) {
+export function storeInternalBetWinMessage(src: InternalBetWinMessage) {
     return (builder: Builder) => {
         let b_0 = builder;
-        b_0.storeUint(1976004186, 32);
+        b_0.storeUint(3735498609, 32);
         b_0.storeCoins(src.amount);
         b_0.storeAddress(src.owner_ton_wallet);
     };
 }
 
-export function loadBetWinMessage(slice: Slice) {
+export function loadInternalBetWinMessage(slice: Slice) {
     let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1976004186) { throw Error('Invalid prefix'); }
+    if (sc_0.loadUint(32) !== 3735498609) { throw Error('Invalid prefix'); }
     let _amount = sc_0.loadCoins();
     let _owner_ton_wallet = sc_0.loadAddress();
-    return { $$type: 'BetWinMessage' as const, amount: _amount, owner_ton_wallet: _owner_ton_wallet };
+    return { $$type: 'InternalBetWinMessage' as const, amount: _amount, owner_ton_wallet: _owner_ton_wallet };
 }
 
-function loadTupleBetWinMessage(source: TupleReader) {
+function loadTupleInternalBetWinMessage(source: TupleReader) {
     let _amount = source.readBigNumber();
     let _owner_ton_wallet = source.readAddress();
-    return { $$type: 'BetWinMessage' as const, amount: _amount, owner_ton_wallet: _owner_ton_wallet };
+    return { $$type: 'InternalBetWinMessage' as const, amount: _amount, owner_ton_wallet: _owner_ton_wallet };
 }
 
-function storeTupleBetWinMessage(source: BetWinMessage) {
+function storeTupleInternalBetWinMessage(source: InternalBetWinMessage) {
     let builder = new TupleBuilder();
     builder.writeNumber(source.amount);
     builder.writeAddress(source.owner_ton_wallet);
     return builder.build();
 }
 
-function dictValueParserBetWinMessage(): DictionaryValue<BetWinMessage> {
+function dictValueParserInternalBetWinMessage(): DictionaryValue<InternalBetWinMessage> {
     return {
         serialize: (src, buidler) => {
-            buidler.storeRef(beginCell().store(storeBetWinMessage(src)).endCell());
+            buidler.storeRef(beginCell().store(storeInternalBetWinMessage(src)).endCell());
         },
         parse: (src) => {
-            return loadBetWinMessage(src.loadRef().beginParse());
-        }
-    }
-}
-
-export type PayBet = {
-    $$type: 'PayBet';
-    bet_address: Address;
-    amount: bigint;
-}
-
-export function storePayBet(src: PayBet) {
-    return (builder: Builder) => {
-        let b_0 = builder;
-        b_0.storeUint(1926842362, 32);
-        b_0.storeAddress(src.bet_address);
-        b_0.storeCoins(src.amount);
-    };
-}
-
-export function loadPayBet(slice: Slice) {
-    let sc_0 = slice;
-    if (sc_0.loadUint(32) !== 1926842362) { throw Error('Invalid prefix'); }
-    let _bet_address = sc_0.loadAddress();
-    let _amount = sc_0.loadCoins();
-    return { $$type: 'PayBet' as const, bet_address: _bet_address, amount: _amount };
-}
-
-function loadTuplePayBet(source: TupleReader) {
-    let _bet_address = source.readAddress();
-    let _amount = source.readBigNumber();
-    return { $$type: 'PayBet' as const, bet_address: _bet_address, amount: _amount };
-}
-
-function storeTuplePayBet(source: PayBet) {
-    let builder = new TupleBuilder();
-    builder.writeAddress(source.bet_address);
-    builder.writeNumber(source.amount);
-    return builder.build();
-}
-
-function dictValueParserPayBet(): DictionaryValue<PayBet> {
-    return {
-        serialize: (src, buidler) => {
-            buidler.storeRef(beginCell().store(storePayBet(src)).endCell());
-        },
-        parse: (src) => {
-            return loadPayBet(src.loadRef().beginParse());
+            return loadInternalBetWinMessage(src.loadRef().beginParse());
         }
     }
 }
@@ -971,6 +873,58 @@ function dictValueParserBalance(): DictionaryValue<Balance> {
     }
 }
 
+export type InitMinter = {
+    $$type: 'InitMinter';
+    content: Cell;
+    is_minter_present: boolean;
+    minter_address: Address | null;
+}
+
+export function storeInitMinter(src: InitMinter) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(1112563628, 32);
+        b_0.storeRef(src.content);
+        b_0.storeBit(src.is_minter_present);
+        b_0.storeAddress(src.minter_address);
+    };
+}
+
+export function loadInitMinter(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 1112563628) { throw Error('Invalid prefix'); }
+    let _content = sc_0.loadRef();
+    let _is_minter_present = sc_0.loadBit();
+    let _minter_address = sc_0.loadMaybeAddress();
+    return { $$type: 'InitMinter' as const, content: _content, is_minter_present: _is_minter_present, minter_address: _minter_address };
+}
+
+function loadTupleInitMinter(source: TupleReader) {
+    let _content = source.readCell();
+    let _is_minter_present = source.readBoolean();
+    let _minter_address = source.readAddressOpt();
+    return { $$type: 'InitMinter' as const, content: _content, is_minter_present: _is_minter_present, minter_address: _minter_address };
+}
+
+function storeTupleInitMinter(source: InitMinter) {
+    let builder = new TupleBuilder();
+    builder.writeCell(source.content);
+    builder.writeBoolean(source.is_minter_present);
+    builder.writeAddress(source.minter_address);
+    return builder.build();
+}
+
+function dictValueParserInitMinter(): DictionaryValue<InitMinter> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeInitMinter(src)).endCell());
+        },
+        parse: (src) => {
+            return loadInitMinter(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type Withdraw = {
     $$type: 'Withdraw';
     amount: bigint;
@@ -1013,6 +967,100 @@ function dictValueParserWithdraw(): DictionaryValue<Withdraw> {
     }
 }
 
+export type IncrementCurrentBlockCount = {
+    $$type: 'IncrementCurrentBlockCount';
+    seqno: bigint;
+    odd_flag: boolean;
+}
+
+export function storeIncrementCurrentBlockCount(src: IncrementCurrentBlockCount) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(317473114, 32);
+        b_0.storeUint(src.seqno, 256);
+        b_0.storeBit(src.odd_flag);
+    };
+}
+
+export function loadIncrementCurrentBlockCount(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 317473114) { throw Error('Invalid prefix'); }
+    let _seqno = sc_0.loadUintBig(256);
+    let _odd_flag = sc_0.loadBit();
+    return { $$type: 'IncrementCurrentBlockCount' as const, seqno: _seqno, odd_flag: _odd_flag };
+}
+
+function loadTupleIncrementCurrentBlockCount(source: TupleReader) {
+    let _seqno = source.readBigNumber();
+    let _odd_flag = source.readBoolean();
+    return { $$type: 'IncrementCurrentBlockCount' as const, seqno: _seqno, odd_flag: _odd_flag };
+}
+
+function storeTupleIncrementCurrentBlockCount(source: IncrementCurrentBlockCount) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.seqno);
+    builder.writeBoolean(source.odd_flag);
+    return builder.build();
+}
+
+function dictValueParserIncrementCurrentBlockCount(): DictionaryValue<IncrementCurrentBlockCount> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeIncrementCurrentBlockCount(src)).endCell());
+        },
+        parse: (src) => {
+            return loadIncrementCurrentBlockCount(src.loadRef().beginParse());
+        }
+    }
+}
+
+export type ProcessOldBlock = {
+    $$type: 'ProcessOldBlock';
+    median_delta_r: bigint;
+    course: bigint;
+}
+
+export function storeProcessOldBlock(src: ProcessOldBlock) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeUint(3179079380, 32);
+        b_0.storeCoins(src.median_delta_r);
+        b_0.storeCoins(src.course);
+    };
+}
+
+export function loadProcessOldBlock(slice: Slice) {
+    let sc_0 = slice;
+    if (sc_0.loadUint(32) !== 3179079380) { throw Error('Invalid prefix'); }
+    let _median_delta_r = sc_0.loadCoins();
+    let _course = sc_0.loadCoins();
+    return { $$type: 'ProcessOldBlock' as const, median_delta_r: _median_delta_r, course: _course };
+}
+
+function loadTupleProcessOldBlock(source: TupleReader) {
+    let _median_delta_r = source.readBigNumber();
+    let _course = source.readBigNumber();
+    return { $$type: 'ProcessOldBlock' as const, median_delta_r: _median_delta_r, course: _course };
+}
+
+function storeTupleProcessOldBlock(source: ProcessOldBlock) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.median_delta_r);
+    builder.writeNumber(source.course);
+    return builder.build();
+}
+
+function dictValueParserProcessOldBlock(): DictionaryValue<ProcessOldBlock> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeProcessOldBlock(src)).endCell());
+        },
+        parse: (src) => {
+            return loadProcessOldBlock(src.loadRef().beginParse());
+        }
+    }
+}
+
  type Bet_init_args = {
     $$type: 'Bet_init_args';
     accountManager: Address;
@@ -1030,8 +1078,8 @@ function initBet_init_args(src: Bet_init_args) {
 }
 
 async function Bet_init(accountManager: Address, seqno: bigint, odd_flag: boolean) {
-    const __code = Cell.fromBase64('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');
-    const __system = Cell.fromBase64('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');
+    const __code = Cell.fromBase64('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');
+    const __system = Cell.fromBase64('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');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -1065,8 +1113,6 @@ const Bet_errors: { [key: number]: { message: string } } = {
     135: { message: `Code of a contract was not found` },
     136: { message: `Invalid address` },
     137: { message: `Masterchain support is not enabled for this contract` },
-    15518: { message: `Amount is too small` },
-    26438: { message: `Only account manager` },
     48121: { message: `Only Account Manager` },
 }
 
@@ -1080,17 +1126,17 @@ const Bet_types: ABIType[] = [
     {"name":"ChangeOwner","header":2174598809,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"ChangeOwnerOk","header":846932810,"fields":[{"name":"queryId","type":{"kind":"simple","type":"uint","optional":false,"format":64}},{"name":"newOwner","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"CreateNewBlock","header":4244186966,"fields":[{"name":"course","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"Win","header":174790457,"fields":[]},
-    {"name":"Lose","header":866806741,"fields":[]},
-    {"name":"ApplyBetMessage","header":2142873043,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"rounds_count","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"bet_ammount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"prev_bet_seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"prev_bet_odd_flag","type":{"kind":"simple","type":"bool","optional":false}}]},
-    {"name":"BetData","header":null,"fields":[{"name":"accountManager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"rounds_count","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"SetBetInfo","header":942208451,"fields":[{"name":"owner_ton_wallet","type":{"kind":"simple","type":"address","optional":false}},{"name":"rounds_count","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"ApplyBetMessage","header":4260982606,"fields":[{"name":"account_manager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"is_negative","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"BetData","header":null,"fields":[{"name":"accountManager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"checkbook","type":{"kind":"simple","type":"address","optional":false}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"is_negative","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"SetBetInfo","header":4279425714,"fields":[{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"ton_check_book","type":{"kind":"simple","type":"address","optional":false}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"balance","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"is_negative","type":{"kind":"simple","type":"bool","optional":false}}]},
     {"name":"GetBetInfo","header":2443301346,"fields":[]},
-    {"name":"ProcessBetInfo","header":1208154667,"fields":[{"name":"accountManager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"rounds_count","type":{"kind":"simple","type":"uint","optional":false,"format":16}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
-    {"name":"BetWinMessage","header":1976004186,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"owner_ton_wallet","type":{"kind":"simple","type":"address","optional":false}}]},
-    {"name":"PayBet","header":1926842362,"fields":[{"name":"bet_address","type":{"kind":"simple","type":"address","optional":false}},{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"ProcessBetInfo","header":1218227262,"fields":[{"name":"accountManager","type":{"kind":"simple","type":"address","optional":false}},{"name":"owner","type":{"kind":"simple","type":"address","optional":false}},{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}},{"name":"delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"bet_amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"is_negative","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"InternalBetWinMessage","header":3735498609,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"owner_ton_wallet","type":{"kind":"simple","type":"address","optional":false}}]},
     {"name":"Balance","header":15493955,"fields":[{"name":"balance","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"InitMinter","header":1112563628,"fields":[{"name":"content","type":{"kind":"simple","type":"cell","optional":false}},{"name":"is_minter_present","type":{"kind":"simple","type":"bool","optional":false}},{"name":"minter_address","type":{"kind":"simple","type":"address","optional":true}}]},
     {"name":"Withdraw","header":195467089,"fields":[{"name":"amount","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
+    {"name":"IncrementCurrentBlockCount","header":317473114,"fields":[{"name":"seqno","type":{"kind":"simple","type":"uint","optional":false,"format":256}},{"name":"odd_flag","type":{"kind":"simple","type":"bool","optional":false}}]},
+    {"name":"ProcessOldBlock","header":3179079380,"fields":[{"name":"median_delta_r","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}},{"name":"course","type":{"kind":"simple","type":"uint","optional":false,"format":"coins"}}]},
 ]
 
 const Bet_getters: ABIGetter[] = [
@@ -1102,9 +1148,8 @@ const Bet_getters: ABIGetter[] = [
 const Bet_receivers: ABIReceiver[] = [
     {"receiver":"internal","message":{"kind":"empty"}},
     {"receiver":"internal","message":{"kind":"typed","type":"SetBetInfo"}},
-    {"receiver":"internal","message":{"kind":"typed","type":"Win"}},
-    {"receiver":"internal","message":{"kind":"typed","type":"Lose"}},
-    {"receiver":"internal","message":{"kind":"typed","type":"GetBetInfo"}},
+    {"receiver":"internal","message":{"kind":"text","text":"Win"}},
+    {"receiver":"internal","message":{"kind":"text","text":"Lose"}},
     {"receiver":"internal","message":{"kind":"text","text":"GetBetInfo"}},
     {"receiver":"internal","message":{"kind":"typed","type":"Deploy"}},
 ]
@@ -1139,7 +1184,7 @@ export class Bet implements Contract {
         this.init = init;
     }
     
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | SetBetInfo | Win | Lose | GetBetInfo | 'GetBetInfo' | Deploy) {
+    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: null | SetBetInfo | 'Win' | 'Lose' | 'GetBetInfo' | Deploy) {
         
         let body: Cell | null = null;
         if (message === null) {
@@ -1148,14 +1193,11 @@ export class Bet implements Contract {
         if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'SetBetInfo') {
             body = beginCell().store(storeSetBetInfo(message)).endCell();
         }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Win') {
-            body = beginCell().store(storeWin(message)).endCell();
+        if (message === 'Win') {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Lose') {
-            body = beginCell().store(storeLose(message)).endCell();
-        }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'GetBetInfo') {
-            body = beginCell().store(storeGetBetInfo(message)).endCell();
+        if (message === 'Lose') {
+            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
         }
         if (message === 'GetBetInfo') {
             body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();

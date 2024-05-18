@@ -78,6 +78,7 @@ PROGRAM{
   DECLPROC $AccountManager$_internal_binary_Mint
   DECLPROC $AccountManager$_internal_binary_InternalBetWinMessage
   DECLPROC $AccountManager$_internal_text_eae3eec1fc17be1459b1ae03cb9234d8cd2f5efb02ac427886ae263bba8ce15f
+  DECLPROC $AccountManager$_internal_text_250b76e2b9576fc6b4c45129483006b0003a0c39b6f7ae413d177f4e3479dbca
   DECLPROC $AccountManager$_internal_binary_CreateNewBlock
   DECLPROC $AccountManager$_internal_binary_Deploy
   91365 DECLMETHOD %TonCheckBookAddress
@@ -971,6 +972,15 @@ PROGRAM{
     $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
     $global_send INLINECALLDICT
   }>
+  $AccountManager$_internal_text_250b76e2b9576fc6b4c45129483006b0003a0c39b6f7ae413d177f4e3479dbca PROCINLINE:<{
+    $AccountManager$_fun_requireOwner INLINECALLDICT
+    s10 PUSH
+    0 PUSHINT
+    130 PUSHINT
+    TRUE
+    $SendParameters$_constructor_to_value_mode_bounce INLINECALLDICT
+    $global_send INLINECALLDICT
+  }>
   $AccountManager$_internal_binary_CreateNewBlock PROCINLINE:<{
     s7 POP
     s8 POP
@@ -1068,7 +1078,7 @@ PROGRAM{
     86142586315491086060343270784266291122 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d584a387645555561625a575878646573425173417853346871554645595373546a50376b6a47733533347777} PUSHSLICE
+    x{697066733a2f2f516d54376e5a4a483558476d683177786f6736557537367978715950506b32314c5a48773664546456594e696e31} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH
@@ -1177,10 +1187,19 @@ PROGRAM{
     0 EQINT
     IF:<{
       HASHSU
+      DUP
       106243928697637735634078895747094747749085819478318633369932954505335536410975 PUSHINT
       EQUAL
       IFJMP:<{
+        DROP
         $AccountManager$_internal_text_eae3eec1fc17be1459b1ae03cb9234d8cd2f5efb02ac427886ae263bba8ce15f INLINECALLDICT
+        TRUE
+        RETALT
+      }>
+      16755831233829029960236183814598340968099579476287469518633057839499026488266 PUSHINT
+      EQUAL
+      IFJMP:<{
+        $AccountManager$_internal_text_250b76e2b9576fc6b4c45129483006b0003a0c39b6f7ae413d177f4e3479dbca INLINECALLDICT
         TRUE
         RETALT
       }>

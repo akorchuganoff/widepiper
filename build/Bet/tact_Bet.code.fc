@@ -11,105 +11,79 @@
 ;; Contract Bet functions
 ;;
 
-(slice, slice, int, int, int, int, int) $Bet$_contract_init(slice $accountManager, int $seqno, int $odd_flag) impure inline_ref {
-    var (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)) = (null(), null(), null(), null(), null(), null(), null());
+(slice, slice, slice, int, int, int, int, int) $Bet$_contract_init(slice $accountManager, int $seqno, int $odd_flag) impure inline_ref {
+    var (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)) = (null(), null(), null(), null(), null(), null(), null(), null());
     $self'accountManager = $accountManager;
     $self'owner_ton_wallet = $accountManager;
+    $self'ton_check_book = $accountManager;
     $self'seqno = $seqno;
     $self'odd_flag = $odd_flag;
-    $self'rounds_count = 0;
     $self'delta_r = 0;
     $self'balance = 0;
-    return ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance);
+    $self'is_negative = false;
+    return ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative);
 }
 
-((slice, slice, int, int, int, int, int), ()) $Bet$_fun_sendBetContinue((slice, slice, int, int, int, int, int) $self) impure inline_ref {
-    var (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)) = $self;
-    if (($self'rounds_count > 0)) {
-        var ($bet_message'owner, $bet_message'rounds_count, $bet_message'delta_r, $bet_message'bet_ammount, $bet_message'prev_bet_seqno, $bet_message'prev_bet_odd_flag) = $ApplyBetMessage$_constructor_owner_rounds_count_delta_r_bet_ammount_prev_bet_seqno_prev_bet_odd_flag($self'owner_ton_wallet, ($self'rounds_count - 1), $self'delta_r, $self'balance, $self'seqno, $self'odd_flag);
-        $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'accountManager, 0, (128 + 2), true, $ApplyBetMessage$_store_cell(($bet_message'owner, $bet_message'rounds_count, $bet_message'delta_r, $bet_message'bet_ammount, $bet_message'prev_bet_seqno, $bet_message'prev_bet_odd_flag))));
-    }
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), ());
+((slice, slice, slice, int, int, int, int, int), (slice, slice, slice, int, int, int, int, int)) $Bet$_fun_BetData((slice, slice, slice, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)) = $self;
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), $BetData$_constructor_accountManager_owner_checkbook_seqno_odd_flag_delta_r_bet_amount_is_negative($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative));
 }
 
-((slice, slice, int, int, int, int, int), (slice, slice, int, int, int, int, int)) $Bet$_fun_BetData((slice, slice, int, int, int, int, int) $self) impure inline_ref {
-    var (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)) = $self;
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), $BetData$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance));
+((slice, slice, slice, int, int, int, int, int), int) $Bet$_fun_Balance((slice, slice, slice, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)) = $self;
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), __tact_my_balance());
 }
 
-((slice, slice, int, int, int, int, int), int) $Bet$_fun_Balance((slice, slice, int, int, int, int, int) $self) impure inline_ref {
-    var (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)) = $self;
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), __tact_my_balance());
-}
-
-((slice, slice, int, int, int, int, int), slice) $Bet$_fun_Address((slice, slice, int, int, int, int, int) $self) impure inline_ref {
-    var (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)) = $self;
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), my_address());
-}
-
-((slice, slice, int, int, int, int, int), ()) $Bet$_fun_require_account_manager((slice, slice, int, int, int, int, int) $self) impure inline_ref {
-    var (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)) = $self;
-    throw_unless(48121, ( __tact_slice_eq_bits($self'accountManager, __tact_context_get_sender()) ));
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), ());
+((slice, slice, slice, int, int, int, int, int), slice) $Bet$_fun_Address((slice, slice, slice, int, int, int, int, int) $self) impure inline_ref {
+    var (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)) = $self;
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), my_address());
 }
 
 ;;
 ;; Receivers of a Contract Bet
 ;;
 
-(((slice, slice, int, int, int, int, int)), ()) %$Bet$_internal_empty((slice, slice, int, int, int, int, int) $self) impure inline {
-    var ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance) = $self;
-    $self'balance = __tact_my_balance();
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), ());
+(((slice, slice, slice, int, int, int, int, int)), ()) %$Bet$_internal_empty((slice, slice, slice, int, int, int, int, int) $self) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
 }
 
-(((slice, slice, int, int, int, int, int)), ()) $Bet$_internal_binary_SetBetInfo((slice, slice, int, int, int, int, int) $self, (slice, int, int) $msg) impure inline {
-    var ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance) = $self;
-    var ($msg'owner_ton_wallet, $msg'rounds_count, $msg'delta_r) = $msg;
-    $self'owner_ton_wallet = $msg'owner_ton_wallet;
+(((slice, slice, slice, int, int, int, int, int)), ()) $Bet$_internal_binary_SetBetInfo((slice, slice, slice, int, int, int, int, int) $self, (slice, slice, int, int, int) $msg) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    var ($msg'owner, $msg'ton_check_book, $msg'delta_r, $msg'balance, $msg'is_negative) = $msg;
+    $self'owner_ton_wallet = $msg'owner;
+    $self'ton_check_book = $msg'ton_check_book;
     $self'delta_r = $msg'delta_r;
-    $self'rounds_count = $msg'rounds_count;
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), ());
+    $self'balance = $msg'balance;
+    $self'is_negative = $msg'is_negative;
+    $global_send($SendParameters$_constructor_to_value_bounce_mode_body($self'accountManager, 20000000, true, 2, $IncrementCurrentBlockCount$_store_cell($IncrementCurrentBlockCount$_constructor_seqno_odd_flag($self'seqno, $self'odd_flag))));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
 }
 
-(((slice, slice, int, int, int, int, int)), ()) $Bet$_internal_binary_Win((slice, slice, int, int, int, int, int) $self, tuple $msg) impure inline {
-    var ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance) = $self;
-    var $msg = $msg;
-    ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)~$Bet$_fun_require_account_manager();
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'accountManager, 0, (64 + 2), true, $BetWinMessage$_store_cell($BetWinMessage$_constructor_amount_owner_ton_wallet(__tact_my_balance(), $self'owner_ton_wallet))));
-    var ($TonCheckInit'code, $TonCheckInit'data) = $TONCheckBook$_init_child(__tact_context_sys, $self'accountManager, $self'owner_ton_wallet);
-    ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)~$Bet$_fun_sendBetContinue();
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($global_contractAddress(($TonCheckInit'code, $TonCheckInit'data)), 0, (128 + 2), true, __gen_cell_comment_828b341002619e9340fc3fd506f1780e8e80056383628f4f5273584b40edecdf()));
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), ());
+((slice, slice, slice, int, int, int, int, int), ()) $Bet$_internal_text_2ccf498f7cdf408f062e296c6df7c08280dd78373665eb6b384833cc14c72872((slice, slice, slice, int, int, int, int, int) $self) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'accountManager, 50000000, 2, true, $InternalBetWinMessage$_store_cell($InternalBetWinMessage$_constructor_amount_owner_ton_wallet($self'balance, $self'owner_ton_wallet))));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce($self'ton_check_book, 0, (128 + 2), true));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
 }
 
-(((slice, slice, int, int, int, int, int)), ()) $Bet$_internal_binary_Lose((slice, slice, int, int, int, int, int) $self, tuple $msg) impure inline {
-    var ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance) = $self;
-    var $msg = $msg;
-    ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)~$Bet$_fun_require_account_manager();
-    ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)~$Bet$_fun_sendBetContinue();
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'accountManager, 0, (128 + 2), true, __gen_cell_comment_d548cf1f3996dc2e1a9ae41e90261cc33896d8f8b846e60678efc3f49d769ec7()));
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), ());
+((slice, slice, slice, int, int, int, int, int), ()) $Bet$_internal_text_531da2ca3f940d771348917c00879aeea3ceccbce2bda18fe3b8f6f93dbbd10e((slice, slice, slice, int, int, int, int, int) $self) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce(__gen_slice_address_a9252bcc86aa3f1ad3837b1caf19334cb58264d434d92c8d0b3a69a5760c8ab0(), 0, (128 + 2), true));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
 }
 
-(((slice, slice, int, int, int, int, int)), ()) $Bet$_internal_binary_GetBetInfo((slice, slice, int, int, int, int, int) $self, tuple $msg) impure inline {
-    var ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance) = $self;
-    var $msg = $msg;
-    ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)~$Bet$_fun_reply($ProcessBetInfo$_store_cell($ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)));
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), ());
+((slice, slice, slice, int, int, int, int, int), ()) $Bet$_internal_text_c39249676c5a951f71517ad784655fa95c2ae4ce2c73e53cadf0b47a4c3e3faa((slice, slice, slice, int, int, int, int, int) $self) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body(__tact_context_get_sender(), 20000000, 2, true, $ProcessBetInfo$_store_cell($ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_delta_r_bet_amount_is_negative($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative))));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
 }
 
-((slice, slice, int, int, int, int, int), ()) $Bet$_internal_text_c39249676c5a951f71517ad784655fa95c2ae4ce2c73e53cadf0b47a4c3e3faa((slice, slice, int, int, int, int, int) $self) impure inline {
-    var ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance) = $self;
-    ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)~$Bet$_fun_reply($ProcessBetInfo$_store_cell($ProcessBetInfo$_constructor_accountManager_owner_seqno_odd_flag_rounds_count_delta_r_bet_amount($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)));
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), ());
-}
-
-(((slice, slice, int, int, int, int, int)), ()) $Bet$_internal_binary_Deploy((slice, slice, int, int, int, int, int) $self, (int) $deploy) impure inline {
-    var ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance) = $self;
+(((slice, slice, slice, int, int, int, int, int)), ()) $Bet$_internal_binary_Deploy((slice, slice, slice, int, int, int, int, int) $self, (int) $deploy) impure inline {
+    var ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative) = $self;
     var ($deploy'queryId) = $deploy;
-    ($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance)~$Bet$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
-    return (($self'accountManager, $self'owner_ton_wallet, $self'seqno, $self'odd_flag, $self'rounds_count, $self'delta_r, $self'balance), ());
+    ($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative)~$Bet$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'accountManager, $self'owner_ton_wallet, $self'ton_check_book, $self'seqno, $self'odd_flag, $self'delta_r, $self'balance, $self'is_negative), ());
 }
 
 ;;
@@ -144,7 +118,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmZ3DA6T1XofPukoUuMAuubBbZB4Wbdn2PCSeJhBpZ1fJT";
+    return "ipfs://QmZzzZPyVpN87K8wpxEcCjVeUnC2N4QLGkspeCiEPwrcds";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -155,7 +129,7 @@ _ lazy_deployment_completed() method_id {
 ;; Routing of a Contract Bet
 ;;
 
-((slice, slice, int, int, int, int, int), int) $Bet$_contract_router_internal((slice, slice, int, int, int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((slice, slice, slice, int, int, int, int, int), int) $Bet$_contract_router_internal((slice, slice, slice, int, int, int, int, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     ;; Handle bounced messages
     if (msg_bounced) {
         return (self, true);
@@ -175,30 +149,9 @@ _ lazy_deployment_completed() method_id {
     }
     
     ;; Receive SetBetInfo message
-    if (op == 942208451) {
+    if (op == 4279425714) {
         var msg = in_msg~$SetBetInfo$_load();
         self~$Bet$_internal_binary_SetBetInfo(msg);
-        return (self, true);
-    }
-    
-    ;; Receive Win message
-    if (op == 174790457) {
-        var msg = in_msg~$Win$_load();
-        self~$Bet$_internal_binary_Win(msg);
-        return (self, true);
-    }
-    
-    ;; Receive Lose message
-    if (op == 866806741) {
-        var msg = in_msg~$Lose$_load();
-        self~$Bet$_internal_binary_Lose(msg);
-        return (self, true);
-    }
-    
-    ;; Receive GetBetInfo message
-    if (op == 2443301346) {
-        var msg = in_msg~$GetBetInfo$_load();
-        self~$Bet$_internal_binary_GetBetInfo(msg);
         return (self, true);
     }
     
@@ -212,6 +165,18 @@ _ lazy_deployment_completed() method_id {
     ;; Text Receivers
     if (op == 0) {
         var text_op = slice_hash(in_msg);
+        
+        ;; Receive "Win" message
+        if (text_op == 0x2ccf498f7cdf408f062e296c6df7c08280dd78373665eb6b384833cc14c72872) {
+            self~$Bet$_internal_text_2ccf498f7cdf408f062e296c6df7c08280dd78373665eb6b384833cc14c72872();
+            return (self, true);
+        }
+        
+        ;; Receive "Lose" message
+        if (text_op == 0x531da2ca3f940d771348917c00879aeea3ceccbce2bda18fe3b8f6f93dbbd10e) {
+            self~$Bet$_internal_text_531da2ca3f940d771348917c00879aeea3ceccbce2bda18fe3b8f6f93dbbd10e();
+            return (self, true);
+        }
         
         ;; Receive "GetBetInfo" message
         if (text_op == 0xc39249676c5a951f71517ad784655fa95c2ae4ce2c73e53cadf0b47a4c3e3faa) {

@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: AccountManager
-BOC Size: 2917 bytes
+BOC Size: 2980 bytes
 
 # Types
 Total Types: 32
